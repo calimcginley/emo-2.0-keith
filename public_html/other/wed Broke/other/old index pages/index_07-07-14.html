@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<!--
+This is Prototype 1.0 of the Emotion App designed by Sona Harrison and Keith McGinley
+This is a hybrid app which will be deployed on PhoneGap -->
+
+<!-- -->
+<html>
+    <head>
+        <title>Final Project | Prototype 1.0</title>
+        <meta charset="UTF-8">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- Theme Roller Can go here -->
+        <link rel="stylesheet" href="css/fpTheme_1.0.css" />
+        <link rel="stylesheet" href="css/jquery.mobile.icons.min.css" />
+        <link rel="stylesheet" href="css/jquery.mobile.structure-1.4.2.min.css" /> 
+        <script src="js/jquery-1.10.2.min.js"></script> 
+        <script src="js/jquery.mobile-1.4.2.min.js"></script>
+        <!-- Code goes here -->
+        <script src="js/mainBodyCode.js" type="text/javascript"></script>
+        <!-- extra css here -->
+        <link href="css/main.css" rel="stylesheet" type="text/css"/>
+        <link href="css/mapDiv.css" rel="stylesheet" type="text/css"/>
+        <!--            Other Plugins go here               -->      
+        <!--           js for leaflet map                   -->
+        <script src='https://api.tiles.mapbox.com/mapbox.js/v1.6.4/mapbox.js'></script>
+        <link href='https://api.tiles.mapbox.com/mapbox.js/v1.6.4/mapbox.css' rel='stylesheet' />
+        <!--            js and css for marker cluster       -->
+	<link rel="stylesheet" href="css/MarkerCluster.css" />
+	<link rel="stylesheet" href="css/MarkerCluster.Default.css" />
+	<script src="js/leaflet.markercluster-src.js"></script>
+        <!--            js and css for radial menu       -->
+	<link rel="stylesheet" href="css/jquery.ferro.ferroMenu.css" />
+	<script src="js/jquery.ferro.ferroMenu-1.2.2.min.js"></script>        
+    </head>
+        <!--  Start of -->
+        <!--  Login Page -->
+        <div data-role="page" id="mainPage" data-theme="b">
+            <div data-role="header">
+                <h1>SENSUS</h1>
+            </div>
+            <div data-role="content">
+                <div class="splashButton">
+                    <img src="images/splash/welcome.png"/>
+                </div>
+                <div id="splashOver">
+                    <img id="splashTop" data-role="button" src="images/splash/top2.png"/>
+                    <img id="splashBottom" src="images/splash/bottom2.png"/>
+                </div>
+                <div id="loginUnder">
+                    <form id="loginForm" action="loginToApp()" method="post">
+                        <input type="text" name="username" id="username" value="Username" onclick="wipeValueUsername()" data-theme="a" />
+                        <input id="password-clear" type="text" value="Password" autocomplete="off" onclick="changeToPassInput()" data-theme="a"  />
+                        <input id="password-password" type="password" name="password" value="" autocomplete="off" data-theme="a" />
+                        <input type="submit" name="login" value="Login" data-theme="a"  />
+                    </form>
+                    <!--
+                    Below we include the Login Button social plugin. This button uses
+                    the JavaScript SDK to present a graphical Login button that triggers
+                    the FB.login() function when clicked.
+                  -->
+                  <div class="fb-login-button" data-scope="public_profile,email,user_friends" data-max-rows="1" data-size="xlarge" data-show-faces="false" data-auto-logout-link="false" onlogin="checkLoginState();"></div>
+                  <div id="status"></div>
+                  <a href="#welcomePage" data-role="button">Skip</a>
+                </div>
+            </div>
+        </div>
+        <!--  End of -->
+        <!--  Login Page -->
+        <!--  Start of -->
+        <!--  Welcome Page -->
+        <div data-role="page" id="welcomePage" data-theme="b">
+            <div data-role="header" data-add-back-btn="true">
+                <h1>SENSUS</h1>
+            </div>
+            <div data-role="content">
+                <!-- Ferro Menu -->
+                <ul id="navEmojiSelect">
+                    <li><a href="<link_path>"><img src="images/emojiIcons/emoji_01.png"/></a></li>
+                    <li><a href="<link_path>"><img src="images/emojiIcons/emoji_02.png"/></a></li>
+                    <li><a href="<link_path>"><img src="images/emojiIcons/emoji_03.png"/></a></li>
+                    <li><a href="<link_path>"><img src="images/emojiIcons/emoji_04.png"/></a></li>
+                    <li><a href="<link_path>"><img src="images/emojiIcons/emoji_05.png"/></a></li>
+                    <li><a href="<link_path>"><img src="images/emojiIcons/emoji_06.png"/></a></li>
+                </ul>
+                <div id='map'></div>
+                <script>
+                    // Create Map with Mapbox.js
+                    // 'calimcginley.h8khfb43' is mapbox design
+                    var map = L.mapbox.map('map', 'calimcginley.h8khfb43', {zoomControl:false}).setView([53.341, -6.27], 13);
+                    //setTimeout(function(){map.invalidateSize();}, 1000);
+                </script>
+                <script>
+                    function importPostGeoData()
+                    {
+                        // ******************************************************************
+                        // ****  Get Geo json from database  ********************************
+                        // ******************************************************************
+                        
+                        $.getJSON('php/single-student-details.php', function(d){
+                        
+                        // ******************************************************************
+                        // ****  Convert JSON into array for D3  ****************************
+                        // ******************************************************************
+                        var data = [];
+                        array.map(function (d){
+                          data.push({
+                            properties: {
+                              postID: d.postID,
+                              userID: d.userID,
+                              emotionType: d.emotionType,
+                              emojiSentence: d.emojiSentence,
+                              imageName: d.imageName,
+                              songID: d.songID,
+                              publicPost: d.publicPost,
+                              timePost: d.timePost
+                            }, 
+                            type: "Feature", 
+                            geometry: {
+                              coordinates:[+d.postLon,+d.postLat], 
+                              type:"Point"
+                            }
+                          });
+                        });
+                        return data;
+                    });
+                 
+                    //**********************************************************************************
+                    //********  CREATE D3 JSON Data  ***************************************************
+                    //**********************************************************************************
+                    var geoData = { type: "FeatureCollection", features: importPostGeoData() };
+
+                </script>
+            </div>
+        </div>
+        <!--  End of -->
+        <!--  Welcome Page -->
+    </body>
+</html>

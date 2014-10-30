@@ -1,0 +1,19 @@
+/* Adjust the width of the left reveal menu. */
+#welcomePage #left-panel1.ui-panel {
+    width: 10em;
+}
+#welcomePage #left-panel1.ui-panel-closed {
+    width: 0;
+}
+#welcomePage .ui-panel-page-content-position-left,
+.ui-panel-dismiss-open.ui-panel-dismiss-position-left {
+    left: 10em;
+    right: -10em;
+}
+#welcomePage .ui-panel-animate.ui-panel-page-content-position-left.ui-panel-page-content-display-reveal {
+    left: 0;
+    right: 0;
+    -webkit-transform: translate3d(10em,0,0);
+    -moz-transform: translate3d(10em,0,0);
+    transform: translate3d(10em,0,0);
+}

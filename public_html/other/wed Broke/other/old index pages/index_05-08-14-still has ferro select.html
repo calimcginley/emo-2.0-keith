@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<!-- This is Prototype 1.0 of the Emotion App designed by Sona Harrison and Keith McGinley This is a hybrid app which will be deployed on PhoneGap -->
+<html>
+    <head>
+        <title>Final Project | Prototype 1.0</title>
+        <meta charset="UTF-8">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- --------------  Theme Roller Can go here  ------------------------- -->
+        <link rel="stylesheet" href="css/fpTheme_1.0.css" />    
+        <link rel="stylesheet" href="css/jquery.mobile.icons.min.css" />
+        <link rel="stylesheet" href="css/jquery.mobile.structure-1.4.2.min.css" />
+        <!-- --------------  Topcoat Can go here  ------------------------------ -->
+        <script src="js/jquery-1.10.2.min.js"></script> 
+        <script src="js/jquery.mobile-1.4.2.min.js"></script>
+        <!-- Code goes here -->
+        <script src="js/mainBodyCode.js" type="text/javascript"></script>
+        <!-- --------------  Main CSS here  ------------------------------------ -->
+        <!-- ------------------------------------------------------------------- -->
+        <link href="css/main.css" rel="stylesheet" type="text/css"/>
+        <!-- --------------  Other Plugins go here  ---------------------------- -->
+        <!-- --------------  js for leaflet map  ------------------------------- -->
+        <!--<script src='https://api.tiles.mapbox.com/mapbox.js/v1.6.4/mapbox.js'></script>-->
+        <script src='js/mapbox.js'></script>
+        <link href='css/mapbox.css' rel='stylesheet' />
+        <!-- --------------  js and CSS for marker cluster  -------------------- -->
+	<link rel="stylesheet" href="css/MarkerCluster.css" />
+	<link rel="stylesheet" href="css/MarkerCluster.Default.css" />
+	<script src="js/leaflet.markercluster-src.js"></script>
+        <!-- --------------  js and CSS for radial menu  ----------------------- -->
+	<link rel="stylesheet" href="css/jquery.ferro.ferroMenu.css" />
+	<script src="js/jquery.ferro.ferroMenu-1.2.2.min.js"></script> 
+        <!-- --------------  js and CSS for honey comb  ----------------------- -->
+        <script src="js/jquery.homeycombs.js"></script>
+	<link rel="stylesheet" href="css/homeycombs.css" />
+        <!-- --------------  velocity.js improve .animate()  ------------------- -->
+        <script src="js/jquery.velocity.min.js" ></script> 
+        <!-- --------------  floatlabels improve form inputs  ----------------- -->
+        <script src="js/floatlabels.min.js" ></script>       
+    </head>
+    <body>  
+        <!--  --------------  Start of  ---------------- -->
+        <!--  --------------  Login Page  -------------- -->
+        <div data-role="page" id="mainPage" data-theme="b">
+            <div data-role="header">
+                <h1>SENSUS</h1>
+            </div>
+            <div data-role="content">
+                <div class="splashButton">
+                    <img src="images/splash/welcome.png"/>
+                </div>
+                <div id="splashOver">
+                    <img id="splashTop" data-role="button" src="images/splash/top2.png"/>
+                    <img id="splashBottom" src="images/splash/bottom2.png"/>
+                </div>
+                <div id="loginUnder">
+                    <form id="loginForm" action="loginToApp()" method="post">
+                        <input type="text" name="username" id="username" placeholder="Username" onclick="wipeValueUsername()"  class="topcoat-text-input--large floatlabel_1"  />
+                        <input id="password-clear" type="text" placeholder="Password" autocomplete="off" onclick="changeToPassInput()"  class="topcoat-text-input--large"  />
+                        <input id="password-password" type="password" name="password" placeholder="Password" autocomplete="off"  class="topcoat-text-input--large floatlabel_1" />
+                        <input type="submit" name="login" value="Login" data-theme="a"/>
+                    </form>
+                    <!--
+                    Below we include the Login Button social plugin. This button uses
+                    the JavaScript SDK to present a graphical Login button that triggers
+                    the FB.login() function when clicked.
+                  -->
+                  <div class="fb-login-button" data-scope="public_profile,email,user_friends" data-max-rows="1" data-size="xlarge" data-show-faces="false" data-auto-logout-link="false" onlogin="checkLoginState();"></div>
+                  <div id="status"></div>
+                  <a class="topcoat-button" href="#welcomePage" data-role="button" style="width: 100%">Skip</a>
+                </div>
+            </div>
+        </div>
+        <!-- --------------  End of  ------------------- -->
+        <!-- -------------- Login Page   --------------- -->
+
+        <!-- --------------  Start of ------------------ -->
+        <!-- --------------  Welcome Page -------------- -->
+        <div data-role="page" id="welcomePage" data-theme="b" >
+            <div data-role="header" data-position="fixed" class="ui-bar">
+                <h1>SENSUS</h1>
+            </div>
+            <div data-role="content">
+                <!-- Ferro Menu -->
+                <ul id="navEmojiSelect">
+                    <li><a href="#emojiPage" ><img src="images/emojiIcons/emoji_01.png"/></a></li>
+                    <li><a href="#emojiPage" ><img src="images/emojiIcons/emoji_02.png"/></a></li>
+                    <li><a href="#emojiPage" ><img src="images/emojiIcons/emoji_03.png"/></a></li>
+                    <li><a href="#emojiPage" ><img src="images/emojiIcons/emoji_04.png"/></a></li>
+                    <li><a href="#emojiPage" ><img src="images/emojiIcons/emoji_05.png"/></a></li>
+                    <li><a href="#emojiPage" ><img src="images/emojiIcons/emoji_06.png"/></a></li>
+                </ul>
+                <div id='map'></div>
+                <script>
+                    // Create Map with Mapbox.js
+                    // 'calimcginley.h8khfb43' is mapbox design
+                var map = L.mapbox.map('map', 'calimcginley.h8khfb43', {zoomControl:false, detectRetina: true}).setView([53.341, -6.27], 11);
+                    var markers = new L.MarkerClusterGroup();
+                    //$.getJSON('http://localhost:8888/finalProject_prototype_1.0/fP_1.0/public_html/php/local_jsonPosts.php', function(data){
+                    $.getJSON('http://icandraw.me/sensus/php/jsonPosts.php', function(data){
+                        $.each(data.posts, function(index, value) {
+                            console.log('PostID:'+value.postID+' '+value.lat+' '+value.long +"images/pin"+value.emoType +".png");
+                            var myIcon = L.icon({
+                                    iconUrl: 'images/pins/pin'+value.emoType +'.png',
+                                    iconRetinaUrl: 'images/pins/pin'+value.emoType +'.png',
+                                    iconSize: [38, 50],
+                                    iconAnchor: [22, 49],
+                                    popupAnchor: [-3, -31],
+                                    shadowUrl: 'images/pins/pinShadow.png',
+                                    shadowRetinaUrl: 'images/pins/pinShadow.png',
+                                    shadowSize: [50, 45],
+                                    shadowAnchor: [2, 45]
+                            });
+                             
+                            var marker = L.marker([value.lat, value.long]
+                                    ,{icon: myIcon}
+                            //, {icon: "images/pin"+value.emoType +".png" }
+                                    );
+                            markers.addLayer(marker);
+                        }); 
+                    });
+                map.addLayer(markers);
+                </script>
+                        <div data-role="popup" id="emojiEnter" data-theme="none" data-shadow="false" >
+                        <div class="popUpBg">
+                            
+                            &nbsp;
+                        </div>
+                </div>
+                <div data-role="footer" data-position="fixed" data-theme="x">
+                   <a href="#left-panel1" data-icon="bars" data-iconpos="notext">Menu</a>                 
+                </div>
+            </div>
+            <div data-role="panel" id="left-panel1" data-display="overlay" class="left-panel" data-theme="a">
+                <ul data-role="listview">
+                    <li data-icon="delete"><a href="#" data-rel="close"></a></li>
+                </ul>
+                <a href="#profilePage"><img src="images/menu/profile.png" width="200"/></a><br>
+                <a href="#emojiPage"><img src="images/menu/camera.png" width="200"/></a><br>
+                <a href="#emojiPage"><img src="images/menu/search.png" width="200"/></a><br>
+            </div>  
+        </div>
+        <!-- --------------  End of -------------------- -->
+        <!-- --------------  Welcome Page -------------- -->
+        <!--  --------------  Start of  ---------------- -->
+        <!--  --------------  Profile Page  -------------- -->
+         <div data-role="page" id="profilePage" data-theme="b">
+            <div data-role="header" data-position="fixed">
+                <h1>My Profile</h1>
+            </div>
+            <div data-role="content" data-position-fixed="true" >
+                <div id="profileHeader">
+                    <div class="profileContent">
+                        <img src="images/honeycomb/profile.png" height="50"/>
+                        <img src="images/honeycomb/places.png"  height="50"/>
+                    </div>
+                    <p>@Hugh_Jass<br>Previous Posts</p>
+                </div>
+                <div class="honeycombs">
+                    <div class="comb">
+                        <img src="images/honeycomb/p_2.jpg" />
+                        <span><b>This is</b><br> a test</span>
+                    </div>
+                    <div class="comb">
+                        <img src="images/honeycomb/p_3.jpg" />
+                        <span><b>This is</b><br> a test</span>
+                    </div>
+                    <div class="comb">
+                        <img src="images/honeycomb/p_3.jpg" />
+                        <span><b>This is</b><br> a test</span>
+                    </div>
+                    <div class="comb">
+                        <img src="images/honeycomb/p_4.jpg" />
+                        <span><b>This is</b><br> a test</span>
+                    </div>
+                    <div class="comb">
+                        <img src="images/honeycomb/p_5.jpg" />
+                        <span><b>This is</b><br> a test</span>
+                    </div>                       
+                    <div class="comb">
+                        <img src="images/honeycomb/p_2.jpg" />
+                        <span><b>This is</b><br> a test</span>
+                    </div>
+                    <div class="comb">
+                        <img src="images/honeycomb/p_3.jpg" />
+                        <span><b>This is</b><br> a test</span>
+                    </div>
+                    <div class="comb">
+                        <img src="images/honeycomb/p_3.jpg" />
+                        <span><b>This is</b><br> a test</span>
+                    </div>
+                    <div class="comb">
+                        <img src="images/honeycomb/p_4.jpg" />
+                        <span><b>This is</b><br> a test</span>
+                    </div>
+                    <div class="comb">
+                        <img src="images/honeycomb/p_5.jpg" />
+                        <span><b>This is</b><br> a test</span>
+                    </div>
+                </div>
+                <div data-role="footer" data-position="fixed" data-theme="x">
+                   <a href="#left-panel2" data-icon="bars" data-iconpos="notext">Menu</a>                 
+                </div>
+            </div>
+            <div data-role="panel" id="left-panel2" data-display="overlay" data-theme="a">
+                <ul data-role="listview">
+                    <li data-icon="delete"><a href="#" data-rel="close">Close</a></li>
+                    <li><a href="#welcomePage">Map</a></li>
+                    <li><a href="#profilePage">Profile</a></li>
+                    <li><a href="#emojiPage">Emoji</a></li>
+                </ul>
+            </div>  
+        </div>           
+        <!-- --------------  End of  ------------------- -->
+        <!-- -------------- Profile Page   --------------- -->
+        <!--  --------------  Start of  ---------------- -->
+        <!--  --------------  Emoji Select Page  -------------- -->
+         <div data-role="page" id="emojiPage" data-theme="b" >            
+            <div data-role="header" data-position="fixed" data-theme="b">
+                <h1>Emoji Selection</h1>
+            </div>                
+            <div data-role="content" data-position-fixed="true" >
+                <h1>Emoji Selection to Go Here</h1>
+                <div class="popUpBg">                           
+                    &nbsp;
+                </div>
+            </div> 
+                <div data-role="footer" data-position="fixed"  data-theme="x">
+                   <a href="#left-panel3" data-icon="bars" data-iconpos="notext">Menu</a>                 
+                </div>
+            <div data-role="panel" id="left-panel3" data-display="overlay" data-theme="a">
+                <ul data-role="listview">
+                    <li data-icon="delete"><a href="#" data-rel="close">Close</a></li>
+                    <li><a href="#welcomePage">Map</a></li>
+                    <li><a href="#profilePage">Profile</a></li>
+                    <li><a href="#emojiPage">Emoji</a></li>
+                </ul>
+            </div>  
+        </div>           
+        <!-- --------------  End of  ------------------- -->
+        <!-- -------------- Profile Page   --------------- -->
+</body>
+</html>

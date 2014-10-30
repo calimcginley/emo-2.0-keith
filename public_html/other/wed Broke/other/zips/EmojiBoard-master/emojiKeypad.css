@@ -1,0 +1,148 @@
+* {
+	font-family: "Helvetica Neue", sans-serif;
+}
+
+body {
+	width: 100%;
+	padding: 0;
+	margin: 0;
+	background: rgb(239, 239, 243);
+}
+
+a {
+	color: rgb(64, 128, 255);
+	text-decoration: none;
+}
+
+h1 {
+	margin: 0;
+	padding: 0;
+	font-size: 20px;
+}
+
+h2 {
+	margin: 0 0 5px 10px;
+	padding: 0;
+	font-size: 14px;
+	text-transform: uppercase;
+	font-weight: normal;
+	color: rgb(80, 80, 80);
+}
+
+#header {
+	padding: 10px 0 10px 0;
+	margin: 0;
+	text-align: center;
+	background: rgb(247, 247, 248);
+	width: 100%;
+	border-bottom: 1px solid rgb(216, 216, 216);
+}
+
+#info {
+	text-align: center;
+	font-size: 14px;
+	color: rgb(80, 80, 80);
+}
+
+.swipe {
+	width: 100%;
+	height: 140px;
+	background: white;
+	margin-bottom: 25px;
+	border-top: 1px solid rgb(216, 216, 216);
+	border-bottom: 1px solid rgb(216, 216, 216);
+}
+
+#recents-1 {
+	width: 100%;
+	height: 130px;
+	background: white;
+	margin-bottom: 25px;
+	border-top: 1px solid rgb(216, 216, 216);
+	border-bottom: 1px solid rgb(216, 216, 216);
+}
+
+.item {
+	float: left !important;
+	clear: none;
+	width: 14% !important;
+	margin: 0;
+	padding: 21px 0 21px 1px;
+	
+	font-size: 16px;
+	line-height: 1px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.page-indicator {
+	height: 8px;
+	text-align: center;
+	margin: 0 auto;
+}
+
+#people-indicator {
+	width: 130px;
+}
+
+#nature-indicator {
+	width: 84px;
+}
+
+#objects-indicator {
+	width: 158px;
+}
+
+#places-indicator {
+	width: 72px;
+}
+
+#symbols-indicator {
+	width: 143px;
+}
+
+.page-dot {
+	background: rgba(0,0,0,0.1);
+	border-radius: 4px;
+	width: 8px;
+	height: 8px;
+	float: left;
+	clear: none;
+	margin: 0 3px;
+	padding: 0;
+}
+
+#no-recents {
+	color: rgb(80, 80, 80);
+	width: 100%;
+	margin-top: 45px;
+	font-size: 14px;
+	text-align: center;
+}
+
+#footer {
+	text-align: center;
+	font-size: 12px;
+	color: rgb(80, 80, 80);
+}
+
+/*********************************************/
+/*  Swipe                                    */
+/*********************************************/
+
+.swipe {
+  overflow: hidden;
+  visibility: hidden;
+  position: relative;
+}
+
+.swipe-wrap {
+  overflow: hidden;
+  position: relative;
+}
+
+.swipe-wrap > div {
+  float:left;
+  width:100%;
+  position: relative;
+}

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<!-- This is Prototype 1.0 of the Emotion App designed by Sona Harrison and Keith McGinley This is a hybrid app which will be deployed on PhoneGap -->
+<html>
+    <head>
+        <title>Final Project | Prototype 1.0</title>
+        <meta charset="UTF-8">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- --------------  Theme Roller Can go here  ------------------------- -->
+        <link rel="stylesheet" href="css/fpTheme_1.0.css" />    
+        <link rel="stylesheet" href="css/jquery.mobile.icons.min.css" />
+        <link rel="stylesheet" href="css/jquery.mobile.structure-1.4.2.min.css" />
+        <!-- --------------  Topcoat Can go here  ------------------------------ -->
+        <script src="js/jquery-1.10.2.min.js"></script> 
+        <script src="js/jquery.mobile-1.4.2.min.js"></script>
+        <!-- Code goes here -->
+        <script src="js/mainBodyCode.js" type="text/javascript"></script>
+        <!-- --------------  Main CSS here  ------------------------------------ -->
+        <!-- ------------------------------------------------------------------- -->
+        <link href="css/main.css" rel="stylesheet" type="text/css"/>
+        <!-- --------------  Other Plugins go here  ---------------------------- -->
+        <!-- --------------  js for leaflet map  ------------------------------- -->
+        <!--<script src='https://api.tiles.mapbox.com/mapbox.js/v1.6.4/mapbox.js'></script>-->
+        <script src='js/mapbox.js'></script>
+        <link href='css/mapbox.css' rel='stylesheet' />
+        <!-- --------------  js and CSS for marker cluster  -------------------- -->
+	<link rel="stylesheet" href="css/MarkerCluster.css" />
+	<link rel="stylesheet" href="css/MarkerCluster.Default.css" />
+	<script src="js/leaflet.markercluster-src.js"></script>
+        <!-- --------------  js for hexibin  ------------------------------- -->
+ 	<script src="js/d3.js"></script>
+	<script src="js/hexbin.js"></script>
+        <script src="js/simple_statistics.js"></script>
+       <!-- --------------  js and CSS for radial menu  ----------------------- -->
+	<link rel="stylesheet" href="css/jquery.ferro.ferroMenu.css" />
+	<script src="js/jquery.ferro.ferroMenu-1.2.2.min.js"></script> 
+        <!-- --------------  js and CSS for honey comb  ----------------------- -->
+        <script src="js/jquery.homeycombs.js"></script>
+	<link rel="stylesheet" href="css/homeycombs.css" />
+        <!-- --------------  velocity.js improve .animate()  ------------------- -->
+        <script src="js/jquery.velocity.min.js" ></script> 
+        <!-- --------------  floatlabels improve form inputs  ----------------- -->
+        <script src="js/floatlabels.min.js" ></script>       
+    </head>
+    <body>  
+        <!--  --------------  Start of  ---------------- -->
+        <!--  --------------  Login Page  -------------- -->
+        <div data-role="page" id="mainPage" data-theme="b">
+            <div data-role="header">
+                <h1>SENSUS</h1>
+            </div>
+            <div data-role="content">
+                <div class="splashButton">
+                    <img src="images/splash/welcome.png"/>
+                </div>
+                <div id="splashOver">
+                    <img id="splashTop" data-role="button" src="images/splash/top2.png"/>
+                    <img id="splashBottom" src="images/splash/bottom2.png"/>
+                </div>
+                <div id="loginUnder">
+                    <form id="loginForm" action="loginToApp()" method="post">
+                        <input type="text" name="username" id="username" placeholder="Username" onclick="wipeValueUsername()"  class="topcoat-text-input--large floatlabel_1"  />
+                        <input id="password-clear" type="text" placeholder="Password" autocomplete="off" onclick="changeToPassInput()"  class="topcoat-text-input--large"  />
+                        <input id="password-password" type="password" name="password" placeholder="Password" autocomplete="off"  class="topcoat-text-input--large floatlabel_1" />
+                        <input type="submit" name="login" value="Login" data-theme="a"/>
+                    </form>
+                    <!--
+                    Below we include the Login Button social plugin. This button uses
+                    the JavaScript SDK to present a graphical Login button that triggers
+                    the FB.login() function when clicked.
+                  -->
+                  <div class="fb-login-button" data-scope="public_profile,email,user_friends" data-max-rows="1" data-size="xlarge" data-show-faces="false" data-auto-logout-link="false" onlogin="checkLoginState();"></div>
+                  <div id="status"></div>
+                  <a class="topcoat-button" href="#welcomePage" data-role="button" style="width: 100%">Skip</a>
+                </div>
+            </div>
+        </div>
+        <!-- --------------  End of  ------------------- -->
+        <!-- -------------- Login Page   --------------- -->
+
+        <!-- --------------  Start of ------------------ -->
+        <!-- --------------  Welcome Page -------------- -->
+        <div data-role="page" id="welcomePage" data-theme="w" >
+            <div data-role="header" data-position="fixed" class="ui-bar">
+            </div>
+            <div data-role="content">
+                <div id='map' class="maps"></div>
+                <script>
+                    // Declare map here
+                    var map;
+        //**********************************************************************************
+        //********  LEAFLET HEXBIN LAYER CLASS *********************************************
+        //**********************************************************************************
+        L.HexbinLayer = L.Class.extend({
+        includes: L.Mixin.Events,
+        initialize: function (rawData, options) {
+          this.levels = {};
+          this.layout = d3.hexbin().radius(10);
+          this.rscale = d3.scale.sqrt().range([0, 10]).clamp(true);
+          this.rwData = rawData;
+          this.config = options;
+        },
+        project: function(x) {
+          var point = this.map.latLngToLayerPoint([x[1], x[0]]);
+          return [point.x, point.y];
+        },
+        getBounds: function(d) {
+          var b = d3.geo.bounds(d)
+          return L.bounds(this.project([b[0][0], b[1][1]]), this.project([b[1][0], b[0][1]]));
+        },
+        update: function () {
+          var pad = 100, xy = this.getBounds(this.rwData), zoom = this.map.getZoom();
+
+          this.container
+            .attr("width", xy.getSize().x + (2 * pad))
+            .attr("height", xy.getSize().y + (2 * pad))
+            .style("margin-left", (xy.min.x - pad) + "px")
+            .style("margin-top", (xy.min.y - pad) + "px");
+
+          if (!(zoom in this.levels)) {
+              this.levels[zoom] = this.container.append("g").attr("class", "zoom-" + zoom);
+              this.genHexagons(this.levels[zoom]);
+              this.levels[zoom].attr("transform", "translate(" + -(xy.min.x - pad) + "," + -(xy.min.y - pad) + ")");
+          }
+          if (this.curLevel) {
+            this.curLevel.style("display", "none");
+          }
+          this.curLevel = this.levels[zoom];
+          this.curLevel.style("display", "inline");
+        },
+        genHexagons: function (container) {
+          var data = this.rwData.features.map(function (d) {
+            var coords = this.project(d.geometry.coordinates)
+            return [coords[0],coords[1], d.properties];
+          }, this);
+
+          var bins = this.layout(data);
+          var hexagons = container.selectAll(".hexagon").data(bins);
+
+          var counts = [];
+          bins.map(function (elem) { counts.push(elem.length) });
+          this.rscale.domain([0, (ss.mean(counts) + (ss.standard_deviation(counts) * 3))]);
+
+          var path = hexagons.enter().append("path").attr("class", "hexagon");
+          this.config.style.call(this, path);
+
+          that = this;
+          hexagons
+            .attr("d", function(d) { return that.layout.hexagon(that.rscale(d.length)); })
+            .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+        },
+        addTo: function (map) {
+          map.addLayer(this);
+          return this;
+        },
+        onAdd: function (map) {
+          this.map = map;
+          var overlayPane = this.map.getPanes().overlayPane;
+
+          if (!this.container || overlayPane.empty) {
+              this.container = d3.select(overlayPane)
+                  .append('svg')
+                      .attr("id", "hex-svg")
+                      .attr('class', 'leaflet-layer leaflet-zoom-hide');
+          }
+          map.on({ 'moveend': this.update }, this);
+          this.update();
+        }
+      });
+
+      L.hexbinLayer = function (data, styleFunction) {
+        return new L.HexbinLayer(data, styleFunction);
+      };
+      //**********************************************************************************
+      //********  IMPORT DATA AND REFORMAT ***********************************************
+      //**********************************************************************************
+      
+        map = L.mapbox.map('map', 'calimcginley.h8khfb43', {zoomControl:false, detectRetina: true})
+        .setView([53.341, -6.27], 11);
+        hexMap();
+        
+        function hexMap()
+        {
+
+        d3.json('http://icandraw.me/sensus/php/mysql_points_geojson_sensus.php', function(geoData) {
+
+        //**********************************************************************************
+        //********  CREATE LEAFLET MAP *****************************************************
+        //**********************************************************************************
+        //var cscale = d3.scale.linear().domain([0,1]).range(["#00FF00","#FFA500"]);
+        // modded to change group to empType and 1-6
+        var cscale = d3.scale.linear().domain([1,2,3,4,5,6]).range(["#5089C6","#A03CB5","#F92028","#F1E835","#7AC57A","#FD9B27"]);
+
+        //**********************************************************************************
+        //********  ADD HEXBIN LAYER TO MAP AND DEFINE HEXBIN STYLE FUNCTION ***************
+        //**********************************************************************************
+        var hexLayer = L.hexbinLayer(geoData, { 
+                          style: hexbinStyle
+                        }).addTo(map);
+
+        function hexbinStyle(hexagons) {
+          hexagons
+            .attr("stroke", "black")
+            .attr("fill", function (d) {
+              var values = d.map(function (elem) {
+                return elem[2].emoType;
+              })
+              var avg = d3.mean(d, function(d) { return +d[2].emoType; })
+              return cscale(avg);
+            });
+        }
+
+      });
+  }
+  
+      function otherMap()
+      {
+                // Maker Cluster Layer    
+                var markers = new L.MarkerClusterGroup();
+                    //$.getJSON('http://localhost:8888/finalProject_prototype_1.0/fP_1.0/public_html/php/local_jsonPosts.php', function(data){
+                    $.getJSON('http://icandraw.me/sensus/php/jsonPosts.php', function(data){
+                        $.each(data.posts, function(index, value) {
+                            console.log('PostID:'+value.postID+' '+value.lat+' '+value.long +"images/pin"+value.emoType +".png");
+                            var myIcon = L.icon({
+                                    iconUrl: 'images/pins/pin'+value.emoType +'.png',
+                                    iconRetinaUrl: 'images/pins/pin'+value.emoType +'.png',
+                                    iconSize: [38, 50],
+                                    iconAnchor: [22, 49],
+                                    popupAnchor: [-3, -31],
+                                    shadowUrl: 'images/pins/pinShadow.png',
+                                    shadowRetinaUrl: 'images/pins/pinShadow.png',
+                                    shadowSize: [50, 45],
+                                    shadowAnchor: [2, 45]
+                            });
+                             
+                            var marker = L.marker([value.lat, value.long]
+                                    ,{icon: myIcon}
+                            //, {icon: "images/pin"+value.emoType +".png" }
+                                    );
+                            markers.addLayer(marker);
+                        }); 
+                    });
+                map.addLayer(markers);
+      }
+ </script>
+                <div data-role="footer" data-position="fixed" data-theme="w">
+                    <div class="hexMenuBtn">
+                        <a href="#left-panel1" data-role="none"><img src="images/menu/menuBtn_black.png" height="44px"/></a>
+                    </div>
+                </div>
+            </div>
+            <div data-role="panel" id="left-panel1" data-display="reveal" class="left-panel" data-theme="b">
+                <a href="#profilePage"><img src="images/menu/profile.png" class="left-panel-btn"/></a><br>
+                <a href="#emojiPage"><img src="images/menu/camera.png" class="left-panel-btn"/></a><br>
+                <a href="#emojiPage"><img src="images/menu/search.png" class="left-panel-btn"/></a><br>
+                <ul data-role="listview">
+                    <li><a href="#" onclick="hexMap()">Map 1</a></li>
+                    <li><a href="#" onclick="otherMap()">Map 2</a></li>
+                    <li data-icon="delete"><a href="#" data-rel="close"></a></li>
+                </ul>
+            </div>  
+        </div>
+        <!-- --------------  End of -------------------- -->
+        <!-- --------------  Welcome Page -------------- -->
+                
+        
+        <!--  --------------  Start of  ---------------- -->
+        <!--  --------------  Profile Page  -------------- -->
+         <div data-role="page" id="profilePage" data-theme="w">
+            <div data-role="header" data-position="fixed">
+                <h1>My Profile</h1>
+            </div>
+            <div data-role="content" data-position-fixed="true" >
+                <div id="profileHeader">
+                    <div class="profileContent">
+                        <img src="images/honeycomb/profile.png" height="50"/>
+                        <img src="images/honeycomb/places.png"  height="50"/>
+                    </div>
+                    <p>@Hugh_Jass<br>Previous Posts</p>
+                </div>
+                <div class="honeycombs">
+                    <div class="comb">
+                        <img src="images/honeycomb/p_2.jpg" />
+                        <span><b>This is</b><br> a test</span>
+                    </div>
+                    <div class="comb">
+                        <img src="images/honeycomb/p_3.jpg" />
+                        <span><b>This is</b><br> a test</span>
+                    </div>
+                    <div class="comb">
+                        <img src="images/honeycomb/p_3.jpg" />
+                        <span><b>This is</b><br> a test</span>
+                    </div>
+                    <div class="comb">
+                        <img src="images/honeycomb/p_4.jpg" />
+                        <span><b>This is</b><br> a test</span>
+                    </div>
+                    <div class="comb">
+                        <img src="images/honeycomb/p_5.jpg" />
+                        <span><b>This is</b><br> a test</span>
+                    </div>                       
+                    <div class="comb">
+                        <img src="images/honeycomb/p_2.jpg" />
+                        <span><b>This is</b><br> a test</span>
+                    </div>
+                    <div class="comb">
+                        <img src="images/honeycomb/p_3.jpg" />
+                        <span><b>This is</b><br> a test</span>
+                    </div>
+                    <div class="comb">
+                        <img src="images/honeycomb/p_3.jpg" />
+                        <span><b>This is</b><br> a test</span>
+                    </div>
+                    <div class="comb">
+                        <img src="images/honeycomb/p_4.jpg" />
+                        <span><b>This is</b><br> a test</span>
+                    </div>
+                    <div class="comb">
+                        <img src="images/honeycomb/p_5.jpg" />
+                        <span><b>This is</b><br> a test</span>
+                    </div>
+                </div>
+                <div data-role="footer" data-position="fixed" data-theme="w">
+                   <a href="#left-panel2" data-icon="bars" data-iconpos="notext">Menu</a>                 
+                </div>
+            </div>
+            <div data-role="panel" id="left-panel2" data-display="reveal" class="left-panel" data-theme="b">
+                <a href="#profilePage"><img src="images/menu/profile.png" class="left-panel-btn"/></a><br>
+                <a href="#emojiPage"><img src="images/menu/camera.png" class="left-panel-btn"/></a><br>
+                <a href="#emojiPage"><img src="images/menu/search.png" class="left-panel-btn"/></a><br>
+                <ul data-role="listview">
+                    <li><a href="#" onclick="hexMap()">Map 1</a></li>
+                    <li><a href="#" onclick="otherMap()">Map 2</a></li>
+                    <li data-icon="delete"><a href="#" data-rel="close"></a></li>
+                </ul>
+            </div>  
+        </div>           
+        <!-- --------------  End of  ------------------- -->
+        <!-- -------------- Profile Page   --------------- -->
+        <!--  --------------  Start of  ---------------- -->
+        <!--  --------------  Emoji Select Page  -------------- -->
+         <div data-role="page" id="emojiPage" data-theme="w" >            
+            <div data-role="header" data-position="fixed">
+                <h1>Emoji Selection</h1>
+            </div>                
+            <div data-role="content" data-position-fixed="true" >
+                <h1>Emoji Selection to Go Here</h1>
+                <div class="popUpBg">                           
+                    &nbsp;
+                </div>
+            </div> 
+                <div data-role="footer" data-position="fixed"  data-theme="w">
+                   <a href="#left-panel3" data-icon="bars" data-iconpos="notext">Menu</a>                 
+                </div>
+            <div data-role="panel" id="left-panel3" data-display="reveal" class="left-panel" data-theme="b">
+                <a href="#profilePage"><img src="images/menu/profile.png" class="left-panel-btn"/></a><br>
+                <a href="#emojiPage"><img src="images/menu/camera.png" class="left-panel-btn"/></a><br>
+                <a href="#emojiPage"><img src="images/menu/search.png" class="left-panel-btn"/></a><br>
+                <ul data-role="listview">
+                    <li><a href="#" onclick="hexMap()">Map 1</a></li>
+                    <li><a href="#" onclick="otherMap()">Map 2</a></li>
+                    <li data-icon="delete"><a href="#" data-rel="close"></a></li>
+                </ul>
+            </div>  
+        </div>           
+        <!-- --------------  End of  ------------------- -->
+        <!-- -------------- Profile Page   --------------- -->
+</body>
+</html>

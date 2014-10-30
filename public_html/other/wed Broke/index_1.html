@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<!-- This is Prototype 1.0 of the Emotion App designed by Sona Harrison and Keith McGinley This is a hybrid app which will be deployed on PhoneGap -->
+<html>
+    <head>
+        <title>Final Project | Prototype 1.0</title>
+        <meta charset="UTF-8">
+        <meta charset="UTF-8">
+        <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />
+        <!--  Theme Roller Can go here  -->
+        <link rel="stylesheet" href="css/sensusTheme.css" />    
+        <link rel="stylesheet" href="css/jquery.mobile.icons.min.css" />
+        <link rel="stylesheet" href="css/jquery.mobile.structure-1.4.2.min.css" />
+        <!--  Topcoat Can go here   -->
+        <script src="js/jquery-1.10.2.min.js"></script> 
+        <script src="js/jquery.mobile-1.4.2.min.js"></script>
+        <!-- Code goes here -->
+        <script src="js/mainBodyCode.js" type="text/javascript"></script>
+        <!--  Main CSS here   -->
+        <!-- - - - - - - - - - - - - - - - - - - -  -->
+        <link href="css/sensusMain.css" rel="stylesheet" type="text/css"/>
+        <!--   Other Plugins go here   -->
+        <script src="js/cordova.js" type="text/javascript"></script>
+        <!--  js login form   -->
+        <script src="js/loginSignUp.js" type="text/javascript"></script>
+        <!--   js for leaflet map  -->
+        <script src='js/mapbox.js'></script>
+        <link href='css/mapbox.css' rel='stylesheet' />
+        <!--   js and CSS for marker cluster  -->
+	<link rel="stylesheet" href="css/MarkerCluster.css" />
+	<link rel="stylesheet" href="css/MarkerCluster.Default.css" />
+	<script src="js/leaflet.markercluster-src.js"></script>
+        <!--  js for hexibin   -->
+ 	<script src="js/d3.min.js"></script>
+	<script src="js/hexbin.js"></script>
+        <script src="js/simple_statistics.js"></script>
+
+        <!--  js and CSS for honey comb   -->
+        <script src="js/jquery.homeycombs.js"></script>
+	<link rel="stylesheet" href="css/homeycombs.css" />
+        <!--   velocity.js improve .animate()   -->
+        <script src="js/jquery.velocity.min.js" ></script> 
+        <!--   floatlabels improve form inputs   -->
+        <script src="js/floatlabels.min.js" ></script>    
+        <script src="js/jquery.lazylinepainter-1.4.1.js" type="text/javascript"></script>
+        <script src="js/raphael-min.js" type="text/javascript"></script>
+        <script src="js/lazyLine.js" type="text/javascript"></script>
+        <!--   font awesome and Topcoat   -->
+        <link rel="stylesheet" href="css/font-awesome.css" />
+        <link href="css/topcoat-mobile-light.css" rel="stylesheet" type="text/css"/>
+        <!--  file upload   -->
+        
+        <!-- emoji Keypad   -->
+        <script src="js/jquery.emoji.js" type="text/javascript"></script>
+        <script src="js/swipe.js" type="text/javascript"></script>
+        <!-- emoji Keypad   -->
+        <script src="js/spin.js" type="text/javascript"></script>
+    </head>
+    <body>
+        
+        <!--    Start of   -->
+        <!--    Splash Page   -->
+        <div data-role="page" id="splashPage" data-theme="w">
+            <div data-role="content">
+                    <div id="mask"></div>
+                    <img src="images/splash/sensusName.svg" alt="" id="maskLogo" width="100%"/>
+            </div>
+        </div>
+        <!--   End of   -->
+        <!--  Splash Page -->
+
+        
+        <!--    Start of   -->
+        <!--    Login Page   -->
+        <div data-role="page" id="loginPage" data-theme="a">
+            <div data-role="header">
+                <h1>SENSUS</h1>
+            </div>
+            <div data-role="content">
+                
+                    <form id="loginForm" data-ajax="false">
+                        <input type="email" name="email" id="email" placeholder="Email" class="floatlabel_1"/>
+                        
+                       <!-- Here the user can select login/sign up -->
+                        <fieldset id="loginType" data-role="controlgroup" data-type="horizontal">
+                            <input type="radio" name="radio-loginSignUp" id="radio-loginSignUp_a" value="login" checked="checked">
+                            <label for="radio-loginSignUp_a">Login</label>
+                            <input type="radio" name="radio-loginSignUp" id="radio-loginSignUp_b" value="signUp">
+                            <label for="radio-loginSignUp_b">Sign Up</label>
+                        </fieldset> 
+                        <input id="password" type="password" name="password" placeholder="Password" autocomplete="off" class="floatlabel_1"/>
+                        <input type="button" name="submitBtn" id="submitBtn" value="Login"/>
+                    </form>
+                    <p>
+                        <span id="formErrorMsg"></span><br>
+                         <a href="#" onclick="forgotPassword()" id="forgotPass" >Forgot Password?</a><br>
+                    </p>                
+            </div>
+        </div>
+        <!--   End of   -->
+        <!--  Login Page  -->
+
+        <!--   Start of  -->
+        <!--   Main Map Page  -->
+        <div data-role="page" id="mapPage" data-theme="w" >
+            <div data-role="header" data-position="fixed" class="ui-bar">
+            </div>
+            <div data-role="content">
+                <div id='map' class="maps"></div>
+                <script>
+                // Declare map here
+                var map;
+                var hexLayer;
+                var markers;
+                var setViewLat;
+                var setViewLong; 
+                window.localStorage.setItem('hex-are','on');
+
+
+                var onSuccess = function(position) 
+                {
+                    setViewLat = position.coords.latitude;
+                    window.localStorage.setItem('postLat', setViewLat);
+                    setViewLong = position.coords.longitude;
+                    window.localStorage.setItem('postLong', setViewLong);
+                    console.log('geo local success lat is '+setViewLat +' and long is '+setViewLong);
+                    setMapInAction();
+                }
+                function onError(error) 
+                {
+                    setViewLat = '52.341';
+                    window.localStorage.setItem('postLat', setViewLat);
+                    setViewLong = '-5.27';
+                    window.localStorage.setItem('postLong', setViewLong);
+                    console.log('Geo local fail lat is '+setViewLat +' and long is '+setViewLong);
+                    setMapInAction();
+                }
+                navigator.geolocation.getCurrentPosition(onSuccess, onError);
+
+                function setMapInAction()
+                {
+                    
+                //**********************************************************************************
+                //********  LEAFLET HEXBIN LAYER CLASS *********************************************
+                //**********************************************************************************
+                L.HexbinLayer = L.Class.extend({
+                includes: L.Mixin.Events,
+                initialize: function (rawData, options) {
+                  this.levels = {};
+                  this.layout = d3.hexbin().radius(25);
+                  this.rscale = d3.scale.sqrt().range([0, 30]).clamp(false);
+                  this.rwData = rawData;
+                  this.config = options;
+                },
+                project: function(x) {
+                  var point = this.map.latLngToLayerPoint([x[1], x[0]]);
+                  return [point.x, point.y];
+                },
+                getBounds: function(d) {
+                  var b = d3.geo.bounds(d)
+                  return L.bounds(this.project([b[0][0], b[1][1]]), this.project([b[1][0], b[0][1]]));
+                },
+                update: function () {
+                  var pad = 100, xy = this.getBounds(this.rwData), zoom = this.map.getZoom();
+
+                  this.container
+                    .attr("width", xy.getSize().x + (2 * pad))
+                    .attr("height", xy.getSize().y + (2 * pad))
+                    .style("margin-left", (xy.min.x - pad) + "px")
+                    .style("margin-top", (xy.min.y - pad) + "px");
+            
+                    // added in this if to decide weather hex layer is visable or not
+                    var hexLayerSwitch = window.localStorage.getItem('hex-are');
+                    
+                    if (hexLayerSwitch === 'on')
+                    {
+                        if (!(zoom in this.levels)) {
+                            this.levels[zoom] = this.container.append("g").attr("class", "zoom-" + zoom);
+                            this.genHexagons(this.levels[zoom]);
+                            this.levels[zoom].attr("transform", "translate(" + -(xy.min.x - pad) + "," + -(xy.min.y - pad) + ")");
+                        }
+                        if (this.curLevel) {
+                            this.curLevel.style("display", "none");
+                        }
+                        this.curLevel = this.levels[zoom];
+                        this.curLevel.style("display", "inline");
+                    } 
+                    else
+                    {
+                        if (!(zoom in this.levels)) {
+                            this.levels[zoom] = this.container.append("g").attr("class", "zoom-" + zoom);
+                            this.genHexagons(this.levels[zoom]);
+                            this.levels[zoom].attr("transform", "translate(" + -(xy.min.x - pad) + "," + -(xy.min.y - pad) + ")");
+                        }
+                        if (this.curLevel) {
+                            this.curLevel.style("display", "none");
+                        }
+                        this.curLevel = this.levels[zoom];
+                        this.curLevel.style("display", "none");
+                    }
+                    
+                },
+                genHexagons: function (container) {
+                  var data = this.rwData.features.map(function (d) {
+                    var coords = this.project(d.geometry.coordinates);
+                    return [coords[0],coords[1], d.properties];
+                  }, this);
+
+                  var bins = this.layout(data);
+                  var hexagons = container.selectAll(".hexagon").data(bins);
+
+                  var counts = [];
+                  bins.map(function (elem) { counts.push(elem.length); });
+                  this.rscale.domain([0, (ss.mean(counts) + (ss.standard_deviation(counts) * 3))]);
+
+                  var path = hexagons.enter().append("path").attr("class", "hexagon");
+                  this.config.style.call(this, path);
+
+                  that = this;
+                  hexagons
+                    .attr("d", function(d) { return that.layout.hexagon(that.rscale(d.length)); })
+                    .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+                    .on('click', function(d) {
+                        map.on('click', function(e) { 
+                            if(map.getZoom() <= 16)
+                            {
+                                map.setView([e.latlng.lat,e.latlng.lng], map.getZoom() + 2);
+                                $('#zoomLevel').html('The level is'+map.getZoom());
+                            }
+                            else
+                            {
+                                $(this).addClass('.animateHexagon');
+                            }
+                        });
+                    });
+                },
+                addTo: function (map) {
+                  map.addLayer(this);
+                  return this;
+                },
+                onAdd: function (map) {
+                  this.map = map;
+                  var overlayPane = this.map.getPanes().overlayPane;
+
+                  if (!this.container || overlayPane.empty) {
+                      this.container = d3.select(overlayPane)
+                          .append('svg')
+                              .attr("id", "hex-svg")
+                              .attr('class', 'leaflet-layer leaflet-zoom-hide emotionHexbin');
+                  }
+                  map.on({ 'moveend': this.update }, this);
+                  this.update();
+              }
+            });
+
+            L.hexbinLayer = function (data, styleFunction) {
+                return new L.HexbinLayer(data, styleFunction);
+            };
+            //**********************************************************************************
+            //********  IMPORT DATA AND REFORMAT ***********************************************
+            //**********************************************************************************
+
+            console.log('At mapbox stage the lat is '+setViewLat +' and long is '+setViewLong);
+            map = L.mapbox.map('map', 'calimcginley.h8khfb43', {zoomControl:false, detectRetina: true})
+            .setView([setViewLat, setViewLong], 14);
+
+
+            d3.json('http://icandraw.me/sensus/php/mysql_points_geojson_sensus.php', function(geoData) {
+
+            //**********************************************************************************
+            //********  CREATE LEAFLET MAP *****************************************************
+            //**********************************************************************************
+            //var cscale = d3.scale.linear().domain([0,1]).range(["#00FF00","#FFA500"]);
+            // modded to change group to empType and 1-6
+            //var cscale = d3.scale.linear().domain([1,2,3,4,5,6]).range(["#7AC57A","#5089C6","#A03CB5","#F92028","#FD9B27","#F1E835"]);
+
+            //**********************************************************************************
+            //********  ADD HEXBIN LAYER TO MAP AND DEFINE HEXBIN STYLE FUNCTION ***************
+            //**********************************************************************************
+            hexLayer = L.hexbinLayer(geoData, { style: hexbinStyle}).addTo(map);
+
+//            function hexbinStyle(hexagons) 
+//            {
+//                hexagons
+//                .attr("stroke", "black")
+//                .attr("fill", function (d) {
+//                    var values = d.map(function (elem) {
+//                        return elem[2].emoType;
+//                    })
+//                    var avg = d3.mean(d, function(d) { return +d[2].emoType; })
+//                    return cscale(avg);
+//                });
+//            }   
+            
+            
+            function hexbinStyle(hexagons) 
+            {
+                console.log('hexbin style start - - - - - - -');
+                hexagons
+                .attr("stroke", "black")
+                .attr("fill", function (d) {               
+                    var emoArray = { '0':'#7AC57A', '1':'#5089C6', '2':'#A03CB5', '3':'#F92028', '4':'#FD9B27', '5':'#F1E835'};
+                    var countArray = [ 0, 0, 0, 0, 0, 0];
+
+                    $.each( d, function( key, value ) 
+                    {
+                        var emoNumber = value[2].emoType - 1;
+                        //var hexCode = emoArray[value[2].emoType];
+                        //console.log('1st '+countArray[0]+' '+countArray[1]+' '+countArray[2]+' '+countArray[3]+' '+countArray[4]+' '+countArray[5]);
+                        countArray[emoNumber]++;
+                        //console.log('2nd '+countArray[0]+' '+countArray[1]+' '+countArray[2]+' '+countArray[3]+' '+countArray[4]+' '+countArray[5]);
+                    });
+                    // Get the max value from the array    
+                    var maxValue = Math.max.apply(null, countArray);
+
+                    // Get the index of the max value, through the built in function inArray
+                    var hexCode = $.inArray(maxValue,countArray);
+                    if(hexCode === -1)
+                    {
+                        //console.log('-1 Max val = '+maxValue+' and index is '+hexCode +' '+emoArray[hexCode]+' '+countArray[0]+' '+countArray[1]+' '+countArray[2]+' '+countArray[3]+' '+countArray[4]+' '+countArray[5]);
+                        return emoArray[0];                        
+                    }
+                    else
+                    {
+                        //console.log('Max val = '+maxValue+' and index is '+hexCode +' '+emoArray[hexCode]+' '+countArray[0]+' '+countArray[1]+' '+countArray[2]+' '+countArray[3]+' '+countArray[4]+' '+countArray[5]);
+                        return emoArray[hexCode];
+                    }
+                }); 
+            };
+        
+                });
+
+            
+            
+            $(document).on('click', '#switchLayerBtn', function(){ 
+                
+                var mode = window.localStorage.getItem('hex-are');
+                if(mode === 'on')
+                {
+                    // Hide the hex layer
+                    $( ".emotionHexbin" ).hide();
+                    // Set hex layer to off
+                    window.localStorage.setItem('hex-are','off');
+                    console.log('hex hidden?');
+                    // Show the marker layer
+                    map.addLayer(markers);                 
+                }
+                else
+                {
+                    // Hide the Marker layer
+                    map.removeLayer(markers);
+
+                    // Show the layers
+                    $( ".emotionHexbin" ).show();
+                    // Set hex layers to visable
+                    window.localStorage.setItem('hex-are','on');
+                    // Get zoom level to display current layer
+                    var zoom = map.getZoom();
+                    console.log('zoom is'+zoom);              
+                    $(".zoom-"+zoom).show();
+                }
+            }); 
+            
+//            
+//            // Zoom on click for hexbin pins
+//            $(document).on('click', function(e){
+//                console.log('Click on hex');
+//                var m = e.getLatLng();
+//                //var zoomLatLng = e.latLng;
+//                console.log(m.lat+' '+m.lng);
+//                map.setView([m.lat,m.lng], map.getZoom() + 1);
+//            });
+
+        // Maker Cluster Layer    
+        markers = new L.MarkerClusterGroup();
+            //$.getJSON('http://localhost:8888/finalProject_prototype_1.0/fP_1.0/public_html/php/local_jsonPosts.php', function(data){
+            $.getJSON('http://icandraw.me/sensus/php/jsonPosts.php', function(data){
+                $.each(data.posts, function(index, value) {
+                    //console.log('PostID:'+value.postID+' '+value.lat+' '+value.long +"images/pin"+value.emoType +".png");
+                    var myIcon = L.icon({
+                            iconUrl: 'images/pins/pin'+value.emoType +'.png',
+                            iconRetinaUrl: 'images/pins/pin'+value.emoType +'.png',
+                            iconSize: [38, 50],
+                            iconAnchor: [22, 49],
+                            popupAnchor: [-3, -31],
+                            shadowUrl: 'images/pins/pinShadow.png',
+                            shadowRetinaUrl: 'images/pins/pinShadow.png',
+                            shadowSize: [50, 45],
+                            shadowAnchor: [2, 45]
+                    });
+
+                    var marker = L.marker([value.lat, value.long]
+                            ,{icon: myIcon}
+                    //, {icon: "images/pin"+value.emoType +".png" }
+                            );
+                    markers.addLayer(marker);
+                }); 
+            });  
+            
+            
+            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+            // - - - - - - - - - -- -  When the mapPage is showen - - - - - - - - - -- 
+            // - - - - - - - - - -- -  This code will trigger - - - - - - - - - - - -- -
+            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   
+
+            $(document).on("pageshow","#mapPage",function(){
+                // - -  Leaflet / MapBox Map - - 
+                map.invalidateSize();   // fixes the issue with map size         
+            });     
+        //  End of setMapInAction()
+    }      
+ </script>
+            </div>
+            <div data-role="footer" data-position="fixed" data-tap-toggle="false" data-theme="w">
+                <div class="hexMenuBtn">
+                    <a href="#left-panel1" data-role="none"><img src="images/menu/menuBtn.png" height="44" alt="" /></a>
+                </div>
+                <div class="layerBtn">
+                    <a id="switchLayerBtn" data-role="none"><img src="images/menu/menuBtn.png" height="44" alt="" /></a>
+                </div>
+                <div id="zoomLevel"></div>
+<!--                <a data-role='button' href="javascript:void(0)" id="removeHexBtn">Remove Hex</a>
+                <a data-role='button' href="javascript:void(0)" id="addHexBtn">Add Hex</a>-->
+            </div>
+            <div data-role="panel" id="left-panel1" data-display="reveal" data-position-fixed="true" class="left-panel" data-theme="b">
+                <img src="images/menu/panelHeader.png" class="panelHeader" alt="" />
+                <a href="#mapPage" data-transition="slide"><img src="images/menu/searchBtn.png" class="left-panel-btn" alt="" /></a><br>
+                <a href="#emojiSelectPage" data-transition="slide"><img src="images/menu/cameraBtn.png" class="left-panel-btn" alt="" /></a><br>
+                <a href="#profilePage" data-transition="slide"><img src="images/menu/profileBtn.png" class="left-panel-btn" alt="" /></a><br>
+                <a href="#emotionPostPage" data-transition="slide"><img src="images/menu/musicBtn.png" class="left-panel-btn" alt="" /></a><br>
+                <a href="#settingsPage" data-transition="slide"><img src="images/menu/settingsBtn.png" class="left-panel-btn" alt="" /></a><br>
+            </div>  
+        </div>
+        <!--   End of  -->
+        <!--   Main Map Page  -->
+
+        
+        <!--    Start of  -->
+        <!--    Profile Page   -->
+         <div data-role="page" id="profilePage" data-theme="w">
+            <div data-role="header" data-position="fixed">
+                <h1>My Profile</h1>
+            </div>
+            <div data-role="content" data-position-fixed="true" >
+                <div id="profileHeader">
+                    <div class="profileContent">
+                        <img src="images/honeycomb/profile.png" height="50" alt="" />
+                        <img src="images/honeycomb/places.png"  height="50" alt="" />
+                    </div>
+                    <p>@Hugh_Jass<br>Previous Posts</p>
+                </div>
+                <div class="honeycombs">
+                    <div class="comb">
+                        <img src="images/honeycomb/p_2.jpg" alt="" />
+                        <span><b>This is</b><br> a test</span>
+                    </div>
+                    <div class="comb">
+                        <img src="images/honeycomb/p_3.jpg" alt="" />
+                        <span><b>This is</b><br> a test</span>
+                    </div>
+                    <div class="comb">
+                        <img src="images/honeycomb/p_3.jpg" alt=""  />
+                        <span><b>This is</b><br> a test</span>
+                    </div>
+                    <div class="comb">
+                        <img src="images/honeycomb/p_4.jpg" alt=""  />
+                        <span><b>This is</b><br> a test</span>
+                    </div>
+                    <div class="comb">
+                        <img src="images/honeycomb/p_5.jpg" alt="" />
+                        <span><b>This is</b><br> a test</span>
+                    </div>                       
+                    <div class="comb">
+                        <img src="images/honeycomb/p_2.jpg" alt="" />
+                        <span><b>This is</b><br> a test</span>
+                    </div>
+                    <div class="comb">
+                        <img src="images/honeycomb/p_3.jpg" alt=""  />
+                        <span><b>This is</b><br> a test</span>
+                    </div>
+                    <div class="comb">
+                        <img src="images/honeycomb/p_3.jpg" alt="" />
+                        <span><b>This is</b><br> a test</span>
+                    </div>
+                    <div class="comb">
+                        <img src="images/honeycomb/p_4.jpg" alt="" />
+                        <span><b>This is</b><br> a test</span>
+                    </div>
+                    <div class="comb">
+                        <img src="images/honeycomb/p_5.jpg" alt="" />
+                        <span><b>This is</b><br> a test</span>
+                    </div>
+                </div>
+            </div>                
+            <div data-role="footer" data-position="fixed" data-tap-toggle="false" data-theme="w">
+                <div class="hexMenuBtn">
+                    <a href="#left-panel2" data-role="none"><img src="images/menu/menuBtn.png" height="44" alt="" /></a>
+                </div>
+            </div>
+            <div data-role="panel" id="left-panel2" data-display="reveal" data-position-fixed="true" class="left-panel" data-theme="b">
+                <img src="images/menu/panelHeader.png" class="panelHeader" alt="" />
+                <a href="#mapPage" data-transition="slide"><img src="images/menu/searchBtn.png" class="left-panel-btn" alt="" /></a><br>
+                <a href="#emojiSelectPage" data-transition="slide"><img src="images/menu/cameraBtn.png" class="left-panel-btn" alt="" /></a><br>
+                <a href="#profilePage" data-transition="slide"><img src="images/menu/profileBtn.png" class="left-panel-btn" alt="" /></a><br>
+                <a href="#musicPage" data-transition="slide"><img src="images/menu/musicBtn.png" class="left-panel-btn" alt="" /></a><br>
+                <a href="#settingsPage" data-transition="slide"><img src="images/menu/settingsBtn.png" class="left-panel-btn" alt="" /></a><br>
+            </div> 
+        </div>           
+        <!--   End of   -->
+        <!--  Profile Page   - -->
+        
+        
+        <!--    Start of   -->
+        <!--    Emoji Select Page   -->
+         <div data-role="page" id="emojiSelectPage" data-theme="w" >            
+            <div data-role="header" data-position="fixed">
+            </div>                
+            <div data-role="content" data-position-fixed="true" >
+                <div id="emojiSelectionDiv">
+                    <div id="emojiSelect-1" ><img src="images/emojiSelect/emoji-1.png" alt="" /></div> 
+                    <div id="emojiSelect-2" ><img src="images/emojiSelect/emoji-2.png" alt="" /></div> 
+                    <div id="emojiSelect-3" ><img src="images/emojiSelect/emoji-3.png" alt="" /></div> 
+                    <div id="emojiSelect-4" ><img src="images/emojiSelect/emoji-4.png" alt="" /></div> 
+                    <div id="emojiSelect-5" ><img src="images/emojiSelect/emoji-5.png" alt="" /></div> 
+                    <div id="emojiSelect-6" ><img src="images/emojiSelect/emoji-6.png" alt="" /></div>                    
+                </div>
+            </div>
+            <div data-role="footer" data-position="fixed" data-tap-toggle="false" data-theme="w">
+                <div class="hexMenuBtn">
+                    <a href="#left-panel3" data-role="none"><img src="images/menu/menuBtn.png" height="44" alt="" /></a>
+                </div>
+            </div>
+            <div data-role="panel" id="left-panel3" data-display="reveal" data-position-fixed="true" class="left-panel" data-theme="b">
+                <img src="images/menu/panelHeader.png" class="panelHeader" alt="" />
+                <a href="#mapPage" data-transition="slide"><img src="images/menu/searchBtn.png" class="left-panel-btn" alt="" /></a><br>
+                <a href="#emojiSelectPage" data-transition="slide"><img src="images/menu/cameraBtn.png" class="left-panel-btn" alt="" /></a><br>
+                <a href="#profilePage" data-transition="slide"><img src="images/menu/profileBtn.png" class="left-panel-btn" alt="" /></a><br>
+                <a href="#musicPage" data-transition="slide"><img src="images/menu/musicBtn.png" class="left-panel-btn" alt="" /></a><br>
+                <a href="#settingsPage" data-transition="slide"><img src="images/menu/settingsBtn.png" class="left-panel-btn" alt="" /></a><br>
+            </div> 
+        </div>           
+        <!--   End of  -->
+        <!--  Emoji Selection Page   - -->
+        
+        
+        <!--    Start of  -->
+        <!--    Emotion Post Page   -->
+         <div data-role="page" id="emotionPostPage" data-theme="p" >            
+            <div data-role="header" data-position="fixed" class="ui-bar">
+            </div>                
+            <div data-role="content" data-position-fixed="true" >
+                
+                <div id="imgWrap">
+                    <img id="hexOverlay" src="images/insert/insertBg.png" alt="" />
+                    <img id="imageHolder" src="posts/testImage.jpg" alt="" />
+                </div>
+                <div id="insertButtons">
+                    <div id='emojiSentDiv' class="emojiRender">
+                    </div>
+                    <div id="upper" data-theme="p">
+                        <div id="panel"  data-theme="p">
+                            <div data-role="tabs" id="tabs"  data-theme="p">
+                                <div data-role="navbar" data-theme="p">
+                                    <ul>
+                                      <li><a href="#tab0" data-ajax="false"> 1 </a></li>
+                                      <li><a href="#tab1" data-ajax="false"> 2 </a></li>
+                                      <li><a href="#tab2" data-ajax="false"> 3 </a></li>
+                                      <li><a href="#tab3" data-ajax="false"> 3 </a></li>
+                                    </ul>
+                                </div>
+                                <div id="tab0" class="tabEmoji">
+                                </div>
+                                <div id="tab1" class="tabEmoji">
+                                </div>
+                                <div id="tab2" class="tabEmoji">
+                                </div>
+                                <div id="tab3" class="tabEmoji">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="bar"  data-theme="p"><a data-role='button' href="#" id="toggle">emoji Description</a></div>
+                    <div id="lower">
+                        <a data-role='button' href="javascript:void(0)" data-transition="slide">Add Music</a>
+                        <a data-role='button' href="javascript:void(0)" data-transition="slide" id="postToMapBtn">Post to Map</a>
+                    </div>
+                </div>
+            </div>
+            <div data-role="footer" data-position="fixed" data-tap-toggle="false" data-theme="w">
+                <div class="hexMenuBtn">
+                    <a href="#left-panel4" data-role="none"><img src="images/menu/menuBtn.png" height="44" alt="" /></a>
+                </div>
+            </div>
+            <div data-role="popup" id="emojiKeypad" data-dismissible="false" style='min-width: 90%; max-width: 90%; min-height: 60%'>
+                <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-left">Close</a>
+                <textarea rows="5" class="emojiSentence"> </textarea>                
+                <a data-role='button' href="javascript:void(0)" class="emoji-button ui-link" title="Emojis">Emojis</a>
+                <a data-role='button' id='emojiButton' href="javascript:void(0)" data-transition="slide">Select Emoji</a>
+            </div>
+            <div data-role="panel" id="left-panel4" data-display="reveal" data-position-fixed="true" class="left-panel" data-theme="b">
+                <img src="images/menu/panelHeader.png" class="panelHeader" alt="" />
+                <a href="#mapPage" data-transition="slide"><img src="images/menu/searchBtn.png" class="left-panel-btn" alt="" /></a><br>
+                <a href="#emojiSelectPage" data-transition="slide"><img src="images/menu/cameraBtn.png" class="left-panel-btn" alt="" /></a><br>
+                <a href="#profilePage" data-transition="slide"><img src="images/menu/profileBtn.png" class="left-panel-btn" alt="" /></a><br>
+                <a href="#musicPage" data-transition="slide"><img src="images/menu/musicBtn.png" class="left-panel-btn" alt="" /></a><br>
+                <a href="#settingsPage" data-transition="slide"><img src="images/menu/settingsBtn.png" class="left-panel-btn" alt="" /></a><br>
+            </div> 
+        </div>           
+        <!--   End of -->
+        <!--  Emotion Post Page   - -->
+          
+        <!--    Start of -->
+        <!--    Music Page   -->
+         <div data-role="page" id="musicPage" data-theme="w" >            
+            <div data-role="header" data-position="fixed">
+                <h1>Music</h1>
+            </div>                
+            <div data-role="content" data-position-fixed="true" >
+                <h1>Music to Go Here</h1>
+                <p>
+                    Holding page for music page.<br>Here we will display most popular tunes on app??<br>
+                    Subject to proving user interest in feature
+                </p>
+            </div>
+             <div data-role="footer" data-position="fixed" data-tap-toggle="false" data-theme="w">
+                <div class="hexMenuBtn">
+                    <a href="#left-panel5" data-role="none"><img src="images/menu/menuBtn.png" height="44" alt="" /></a>
+                </div>
+            </div>
+            <div data-role="panel" id="left-panel5" data-display="reveal" data-position-fixed="true" class="left-panel" data-theme="b">
+                <img src="images/menu/panelHeader.png" class="panelHeader" alt="" />
+                <a href="#mapPage" data-transition="slide"><img src="images/menu/searchBtn.png" class="left-panel-btn" alt="" /></a><br>
+                <a href="#emojiSelectPage" data-transition="slide"><img src="images/menu/cameraBtn.png" class="left-panel-btn" alt="" /></a><br>
+                <a href="#profilePage" data-transition="slide"><img src="images/menu/profileBtn.png" class="left-panel-btn" alt="" /></a><br>
+                <a href="#musicPage" data-transition="slide"><img src="images/menu/musicBtn.png" class="left-panel-btn" alt="" /></a><br>
+                <a href="#settingsPage" data-transition="slide"><img src="images/menu/settingsBtn.png" class="left-panel-btn" alt="" /></a><br>
+            </div> 
+        </div>           
+        <!--   End of   -->
+        <!--  Music Page -->
+               
+        <!--    Start of   -->
+        <!--    Settings Page   -->
+         <div data-role="page" id="settingsPage" data-theme="w" >            
+            <div data-role="header" data-position="fixed">
+                <h1>User Info</h1>
+            </div>                
+            <div data-role="content" data-position-fixed="true" >
+                <input type="text" name="First Name" id="firstName" placeholder="First Name" class="floatlabel_1"/>
+                <input type="text" name="Last Name" id="lastName" placeholder="Last Name" class="floatlabel_1"/>
+                <label for="selectGender">Gender:</label>
+                <select name="selectGender" id="selectGender">
+                    <option value="0"> Please select Gender</option>
+                    <option value="1">Male</option>
+                    <option value="2">Female</option>
+                    <option value="3">Other</option>
+                </select>
+                <button id="updateBtn" data-theme="b">Update User Info</button>
+                <button id="logoutBtn" data-theme="b">Logout</button>
+            </div> 
+            <div data-role="footer" data-position="fixed" data-tap-toggle="false" data-theme="w">
+                <div class="hexMenuBtn">
+                    <a href="#left-panel6" data-role="none"><img src="images/menu/menuBtn.png" height="44" alt="" /></a>
+                </div>
+            </div>
+            <div data-role="panel" id="left-panel6" data-display="reveal" data-position-fixed="true" class="left-panel" data-theme="b">
+                <img src="images/menu/panelHeader.png" class="panelHeader" alt="" />
+                <a href="#mapPage" data-transition="slide"><img src="images/menu/searchBtn.png" class="left-panel-btn" alt="" /></a><br>
+                <a href="#emojiSelectPage" data-transition="slide"><img src="images/menu/cameraBtn.png" class="left-panel-btn" alt="" /></a><br>
+                <a href="#profilePage" data-transition="slide"><img src="images/menu/profileBtn.png" class="left-panel-btn" alt="" /></a><br>
+                <a href="#musicPage" data-transition="slide"><img src="images/menu/musicBtn.png" class="left-panel-btn" alt="" /></a><br>
+                <a href="#settingsPage" data-transition="slide"><img src="images/menu/settingsBtn.png" class="left-panel-btn" alt="" /></a><br>
+            </div> 
+        </div>           
+        <!--   End of   -->
+        <!--  Settings Page -->
+</body>
+</html>
