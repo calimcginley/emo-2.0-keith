@@ -217,27 +217,14 @@ ul, menu, dir {
     margin: 0;
 }
 
-/* Date Time Text Box */
-#dateTimeText {
-    text-align: center;
-}
-/* Hide the number input */
-#timeSlider input {
-    display: none;
-}
-#timeSlider .ui-slider-track {
-    margin-left: 0px;
-}
-
 /* ------------------------------------------------------------------------------------------
 // ------------------------------  Emoji Selection  ------------------------------------------
 // ----------------------------------------------------------------------------------------*/ 
 
 #emojiSearchBar {
     position: absolute;
-    background-color: rgba(235,255,255,.9);
+    background-color: rgba(255,255,255,.9);
     top: -100%;
-    //height: 200px;
     width: 100%;
     left: 0;
     text-align: center;
@@ -246,6 +233,7 @@ ul, menu, dir {
 #emojiSearchBar img {
     width: 20%;
 }
+
 
 .filterOff {
     opacity: .25;
@@ -301,7 +289,7 @@ ul, menu, dir {
 {
     width: 46px;
     margin: 0 auto;
-    padding: 0;
+    padding-left: 3em;
 }
 
 .hexMenuBtn a
@@ -648,7 +636,7 @@ ul, menu, dir {
 
 .tabEmoji
 {
-    background-color: #cccccc;    
+    background-color: #E2E2E2;    
 }
 
 .addEmoji

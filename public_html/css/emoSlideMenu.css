@@ -16,7 +16,7 @@ body,
 }
 
 .container {
-    background: #E8E9E9;
+    background: #ffffff;
     overflow: hidden;
     position: absolute;
     top: 0;
@@ -157,6 +157,7 @@ body,
 .menu-top {
     line-height: 45px;
     background-color: #FFFFFF;
+    padding-left: 2em;
 }
 
 .menu-top .profile {
@@ -199,11 +200,11 @@ body,
 .menu-side a {
     display: block;
     padding: 1.2em;
-    border-bottom: 1px solid rgba(0,0,0,0.1);
+    border-bottom: 0px solid rgba(0,0,0,0.1);
 }
 
 .menu-side a:first-child {
-    border-top: 1px solid rgba(0,0,0,0.1);
+     
 }
 
 /* Shown menu */

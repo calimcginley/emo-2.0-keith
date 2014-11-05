@@ -17,10 +17,11 @@ error_reporting(-1);
 $conn = new PDO('mysql:host=mysql2275.cp.blacknight.com;dbname=db1029802_sensus','u1029802_sensus','>P<o,P2.qr');
 
 $emoTypeFilter = $_GET["emoTypes"];
+$whereString = $_GET["whereString"];
 #$timeFilter = $_GET["time"];
 
 # Build SQL SELECT statement including x and y columns
-$sql = 'SELECT postID, emoType, postLat, postLong FROM emotionPosts WHERE emoType REGEXP ' .$emoTypeFilter .';';
+$sql = 'SELECT postID, emoType, postLat, postLong FROM emotionPosts WHERE emoType REGEXP ' .$emoTypeFilter .' AND WHERE timeServer BETWEEN ' .$whereString .';';
 # $sql = 'SELECT postID, emoType, postLat, postLong FROM emotionPosts WHERE timeServer BETWEEN SUBDATE(CURDATE(), INTERVAL 1 MONTH) AND NOW();';
 
 /*
