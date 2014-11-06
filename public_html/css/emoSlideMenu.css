@@ -65,7 +65,7 @@ body,
     width: 100%;
     padding-top: 20px;
     height: 88px; 
-    background-color: #ffffff;
+    background-color: #79CCCA;
     top: 0;
     left: 0;    
 }
@@ -84,7 +84,7 @@ body,
     left: 0;
     width: 100%;
     margin-top: 10px;
-    background-color: #ffffff;
+    background-color: #79CCCA;
 }
 
 
@@ -258,7 +258,7 @@ body,
 {
     position:absolute;
     z-index: 1950;
-    top: 44px;
+    top: 40px;
     right: 15px;
     width: 90%;
     /* transform: rotate(90deg); */
@@ -268,7 +268,7 @@ body,
 {
     position:absolute;
     z-index: 1950;
-    top: 300px;
+    top: 350px;
     right: 15px;
     width: 270px;
     text-align: left;

@@ -183,7 +183,7 @@ function setMapInAction()
 
         console.log('The REGEXP string is now:');
         console.log(emoTypes);
-        var jsonStringHex = 'http://www.emoapp.info/php/mysql_points_geojson_sensus.php?emoTypes=%27' + emoTypes + '%27&whereString='+whereTimeString;
+        var jsonStringHex = 'http://www.emoapp.info/php/mysql_points_geojson_sensus.php?emoTypes=%27' + emoTypes + '%27&whereString=' + whereTimeString;
         console.log('The PHP url is now:');
         console.log(jsonStringHex);
 
@@ -348,6 +348,7 @@ function markerClicked(postID)
     $.ajax({url: 'http://emoapp.info/php/getMarkerInfo.php',
         data: {action: 'markerPost', postID: postID},
         type: 'post',
+        dataType: "json",
         async: 'true',
         //dataType: 'json',
         beforeSend: function () {
@@ -362,13 +363,27 @@ function markerClicked(postID)
             $.mobile.loading("hide");
         },
         success: function (result) {
-            // Map marker was success        
-            console.log('Map Marker Fetch Succesfull');
-            console.log($.trim(result));
-            console.log(result.status);
-            var imgSrc = 'http://emoapp.info/uploads/' + $.trim(result) + '.jpg';
-            console.log('The image src is : ' + imgSrc);
-            $('#emoPostPopup').attr('src', imgSrc);
+            $.each(result.marker, function (key, val) {
+                // Map marker was success  
+                $('#emoPostPopup').attr('src', ' ');
+                console.log('Map Marker Fetch Succesfull');
+                console.log('image: '+val.imageName);
+                console.log('Post Time: '+val.timeThen);
+                console.log('Now: '+val.timeNow);
+                var imgSrc = 'http://emoapp.info/uploads/' + val.imageName + '.jpg';
+                console.log('The image src is : ' + imgSrc);
+                $('#emoPostPopup').attr('src', imgSrc);
+                // Time Difference
+                var a = moment(val.timeThen);
+                console.log(a);
+                var b = moment(val.timeNow);
+                console.log(b);
+                var timeOffset = a.from(b);
+                console.log(timeOffset);
+
+                $('#popUpInfo').html('<i class="fa fa-clock-o fa-2x"></i> ' + timeOffset);
+            });
+
             // Open the Map Marker
             $('#mapPage').addClass('show-popup');
             $("#emojiSearchBar").velocity({top: "-100%", easing: "easein"}, 500);
@@ -514,14 +529,14 @@ $(document).on("pageshow", "#mapPage", function () {
         filterOpen = !filterOpen;
         setJsonLayers();
     });
-    
+
     // Filter Button closes the filter bar and initates new hex-svg elements.
     $(".quickSearch").bind("click", function (event, ui) {
         console.log('Quick Search Clicked');
         // Set the variables
-        var timeInterval = $(this).attr('data-name');    
-        window.localStorage.setItem('sqlTimeStr', 'SUBDATE(CURDATE(),%27INTERVAL%27'+timeInterval +')%27AND%27NOW()');
-        console.log('Time Interval set as: '+timeInterval);     
+        var timeInterval = $(this).attr('data-name');
+        window.localStorage.setItem('sqlTimeStr', 'SUBDATE(CURDATE(),%27INTERVAL%27' + timeInterval + ')%27AND%27NOW()');
+        console.log('Time Interval set as: ' + timeInterval);
         $("#emojiSearchBar").velocity({top: "-100%", easing: "easein"}, 500);
         filterOpen = !filterOpen;
         setJsonLayers();
