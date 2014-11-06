@@ -8,7 +8,6 @@
         <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />
         <!--  Theme Roller Can go here  -->
         <link href="css/emoTheme.css" rel="stylesheet" type="text/css"/>
-        <!--        <link href="css/jquery.mobile.icons.min.css" rel="stylesheet" type="text/css"/>-->
         <link href="css/jquery.mobile-1.4.5.min.css" rel="stylesheet" type="text/css"/>
         <script src="js/jquery-1.10.2.min.js"></script> 
         <script src="js/jquery.mobile-1.4.5.min.js"></script>
@@ -106,7 +105,7 @@
                         </div>                       
                         <img src="" id="emoPostPopup" alt=" "/>
                         <div id="popUpInfo">
-                            
+                            <i class="fa fa-clock-o fa-2x"></i>
                         </div>
                     </nav>              
                 </div>
@@ -131,14 +130,14 @@
                             <label for="checkboxSelectAll">Select All</label>
                             <hr>
                             <form id="filterForm">
-                                <div class="ui-grid-c" >
-                                    <a href='#' data-role="button" class="quickSearch ui-block-a" data-name="8 HOUR" >Last<br>8hrs</a>
+                                <div class="ui-grid-c">
+                                    <a href='#' data-role="button" class="quickSearch ui-block-a" data-name="HOUR" >Last<br>8hrs</a>
                                     <a href='#' data-role="button" class="quickSearch ui-block-b" data-name="DAY" >Last<br>Day</a>
                                     <a href='#' data-role="button" class="quickSearch ui-block-c" data-name="WEEK" >Last<br>Week</a>
-                                    <a href='#' data-role="button" class="quickSearch ui-block-d" data-name="MONTH" >Last<br>Month</a>                                   
+                                    <a href='#' data-role="button" class="quickSearch ui-block-d" data-name="MONTH" >Last<br>Month</a>
                                 </div>
                                 <hr>
-                                <h4 style="color: grey;">Date Range</h4>
+                                <h4>Date Range</h4>
                                 <div class="input-daterange ui-grid-a" id="datepicker">
                                     <div class="ui-block-a">From:<input type="text" class="input-small" name="start" data-mini="true"/></div>
                                     <div class="ui-block-b">To:<input type="text" class="input-small" name="end" data-mini="true"/></div>
@@ -209,12 +208,12 @@
                 <div class="menu-wrap">
                     <nav class="menu-top">
                         <div class="profile">
-                            <img src="images/vibesHeader.png" alt="vibe">
+                            <img src="images/vibesHeader.svg" alt="vibe">
                         </div>
 
                     </nav>
                     <nav class="menu-side">
-                        <img src="images/vibesBorder.svg" alt="vibe">
+                        <img src="images/vibesBorder.svg" alt="vibe" style="padding-left: 2em;">
                         <div class="menu-top-buttons">
                             <a href="#mapPage" class="mapLink" data-transition="slide"><img src="images/menu/mapBtn.svg" class="left-panel-btn" alt="" /></a>
                             <a href="#" data-transition="slide" class="emoFilterBtn"><img src="images/menu/searchBtn.svg" class="left-panel-btn" alt="" /></a>
@@ -245,7 +244,7 @@
                         <button id="updateBtn" >Update User Info</button>
                         <button id="logoutBtn" >Logout</button>
                     </div>
-                    <img src='images/vibesHeader.svg' alt='' class='settingsVibe'>
+                    <img src='images/vibesHeader_2.svg' alt='' class='settingsVibe'>
                 </div><!-- /content-wrap -->
             </div><!-- /container -->
         </div>
@@ -277,7 +276,6 @@
                     <div class="mapHeader"><h2>vibes</h2></div>
                     <div id="canvasBuffer"></div>
                     <canvas id="imageCanvas" width="320" height="350"></canvas>
-
                     <div id="insertButtons">
                         <div id='emojiSentDiv' class="emojiRender">
                         </div>

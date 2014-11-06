@@ -17,11 +17,31 @@ error_reporting(-1);
 $conn = new PDO('mysql:host=mysql2275.cp.blacknight.com;dbname=db1029802_sensus','u1029802_sensus','>P<o,P2.qr');
 
 $emoTypeFilter = $_GET["emoTypes"];
-$whereString = $_GET["whereString"];
+$sqlTimeFilter = '';
+# where string 
+$timeType = $_GET["timeType"];
+$interval = $_GET["interval"];
 #$timeFilter = $_GET["time"];
+if($timeType == 'fastButtons')
+{
+    $sqlTimeFilter = 'DATE_SUB(NOW(), INTERVAL ';
+    if($interval == 'HOUR')
+    {
+        $sqlTimeFilter = $sqlTimeFilter .'8 HOUR) AND NOW()';
+    }
+    else
+    {
+       $sqlTimeFilter = $sqlTimeFilter .'1 ' .$interval .') AND NOW()';
+    }
+}
+else if ($timeType == 'default')
+{
+    // Set to 6 months change to 1 day or 8 hours when live
+    $sqlTimeFilter = 'DATE_SUB(NOW(), INTERVAL 6 MONTH ) AND NOW()';
+}
 
 # Build SQL SELECT statement including x and y columns
-$sql = 'SELECT postID, emoType, postLat, postLong FROM emotionPosts WHERE emoType REGEXP ' .$emoTypeFilter .' AND WHERE timeServer BETWEEN ' .$whereString .';';
+$sql = 'SELECT postID, emoType, postLat, postLong FROM emotionPosts WHERE emoType REGEXP ' .$emoTypeFilter .' AND timeServer BETWEEN ' .$sqlTimeFilter;
 # $sql = 'SELECT postID, emoType, postLat, postLong FROM emotionPosts WHERE timeServer BETWEEN SUBDATE(CURDATE(), INTERVAL 1 MONTH) AND NOW();';
 
 /*

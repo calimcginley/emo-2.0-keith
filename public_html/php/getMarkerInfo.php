@@ -79,7 +79,7 @@ if ($row) {
     //$date = date("Y/m/d H:i:s");
     //date_default_timezone_set('America/Chicago');
     //$marker['timeNow'] = date('d/m/Y == H:i:s');
-    $marker['timeNow'] = gmdate('Y-m-d h:i:s \G\M\T');
+    $marker['timeNow'] = gmdate('Y-m-d h:i:s');
     //echo $row[0];
     array_push($response["marker"], $marker);
 } else {
