@@ -274,6 +274,7 @@ ul, menu, dir {
     position: relative;
     top: 108px;
     width: 100%;
+    color: #9e9e9e;
    
     margin-top: 20px;
     margin-bottom: 10px;
@@ -470,6 +471,11 @@ ul, menu, dir {
 
 .emojiParent img {
     width: 20%;
+}
+
+#canvasBuffer {
+    width: 100%;
+    height: 44px;
 }
 
 /*****************************************************
