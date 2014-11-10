@@ -245,11 +245,11 @@ $(document).on('click', '#postToMapBtn', function () {
             var imgEmo = new Image();
             (function (pad) {
                 imgEmo.onload = function () {
-                    context.drawImage(imgEmo, pad, 330, 30, 30);
+                    context.drawImage(imgEmo, pad, 990, 60, 60);
                 };
                 imgEmo.src = 'images/emojis/' + value.title + '.png';
             })(padLeft);
-            padLeft = padLeft + 15;
+            padLeft = padLeft + 75;
             console.log(padLeft);
             if (index === lastLoop)
             {
@@ -435,14 +435,14 @@ $(document).ready(function ()
         {
             console.log('emoji keypad opened');
             $('#toggle').html('close');
-            $("#insertButtons").velocity({top: "-=100", easing: "easein"}, 400).delay(800);
+            $("#insertButtons").velocity({top: "-=250", easing: "easein"}, 400).delay(800);
             window.localStorage.setItem('emojiKeypad', 'on');
         }
         else
         {
             console.log('emoji keypad closed');
             $('#toggle').html('emoji Description');
-            $("#insertButtons").velocity({top: "+=100", easing: "easein"}, 400).delay(800);
+            $("#insertButtons").velocity({top: "+=250", easing: "easein"}, 400).delay(800);
             window.localStorage.setItem('emojiKeypad', 'off');
         }
     });
