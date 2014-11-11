@@ -193,19 +193,14 @@ function camera()
         var context = canvas.getContext('2d');
         context.clearRect(0, 0, canvas.width, canvas.height);
         // Add the emoji Colour
-        context.rect(0, 0, 960, 990);
+        context.rect(0, 0, 960, 975);
         context.fillStyle = emojiColours[parentEmoji];
         context.fill();
-        // Add the emoji Icon
-        var emojiIconObj = new Image();
-        emojiIconObj.onload = function () {
-            context.drawImage(emojiIconObj, 20, 900);
-        };
-        emojiIconObj.src = 'images/emojiSelect/emoji-'+parentEmoji+'.png';
 
         // Camera Image Loaded
         var imageObj = new Image();
         imageObj.onload = function () {
+            context.globalAlpha = 1;
             context.drawImage(imageObj, 0, 0, 960, 960);
         };
         imageObj.src = imageURI;
@@ -236,28 +231,30 @@ $(document).on('click', '#postToMapBtn', function () {
         var padLeft = 15;
         var canvas = document.getElementById('imageCanvas');
         var context = canvas.getContext('2d');
-        var lastLoop = emojiImgArr.length - 1;
 
         $.each(emojiImgArr, function (index, value)
         {
+            // Emoji Input Canvas
             console.log(index);
             console.log(value.title);
             var imgEmo = new Image();
             (function (pad) {
                 imgEmo.onload = function () {
-                    context.drawImage(imgEmo, pad, 990, 60, 60);
+                    context.drawImage(imgEmo, pad, 980, 90, 90);
                 };
                 imgEmo.src = 'images/emojis/' + value.title + '.png';
             })(padLeft);
-            padLeft = padLeft + 75;
+            padLeft = padLeft + 105;
             console.log(padLeft);
-            if (index === lastLoop)
-            {
-                // On last loop when image is loaded
-                // Send the post to server
-                imgEmo.addEventListener('load', sendPost);
-            }
         });
+        // Add the emoji Icon Canvas
+        var emojiIconObj = new Image();
+        emojiIconObj.onload = function () {
+            context.globalAlpha = 0.58;
+            context.drawImage(emojiIconObj, 20, 20, 200, 176);
+        };
+        emojiIconObj.src = 'images/emojiSelect/emoji-' + window.localStorage.getItem('parentPostEmoji') + '.png';
+        emojiIconObj.addEventListener('load', sendPost);
     }
 
     var onSuccess = function (position)
@@ -285,13 +282,9 @@ $(document).on('click', '#postToMapBtn', function () {
         console.log('User Email: ' + userEmail);
         var parentEmoji = window.localStorage.getItem('parentPostEmoji');
         console.log('Parent Emoji: ' + parentEmoji);
-        //var emojiSentence = $('#emojiSentDiv').html();
-        //console.log('emoji sentence: ' + emojiSentence);
         var timeStmp = $.now();
         var imageNameStr = timeStmp + '_' + userID;
         console.log('Image Name: ' + imageNameStr);
-        var musicId = '1234';
-        console.log('Music ID: ' + musicId);
         var postPublic = 1;
         console.log('Public Post: ' + postPublic);
         var now = new Date();
@@ -300,27 +293,14 @@ $(document).on('click', '#postToMapBtn', function () {
         console.log('Time on Device: ' + timeDevice);
 
         function uploadPhoto(fileNameStr) {
-
             $.mobile.loading("show", {
                 text: 'Image uploading ...',
                 textVisible: true
             });
-
             console.log('File Path');
-
-            //var imageURI = window.localStorage.getItem('imageURI');
-            var imageData = document.getElementById('imageCanvas').toDataURL('image/png');
-            //document.getElementById('imageHolder').value = document.getElementById('imageCanvas').toDataURL('image/png');
-
-            //var imageData = canvas.toDataURL();
-            console.log('File Path-2');
+            var imageData = document.getElementById('imageCanvas').toDataURL('image/jpg');
+            console.log('Image DATA: ');
             console.log(imageData);
-
-            // set canvasImg image src to dataURL
-            // so it can be saved as an image
-            //document.getElementById('imageCanvas').src = imageURI;
-            //var imageURI = document.getElementById('imageCanvas').src;
-            //console.log(imageURI);
 
             // http://stackoverflow.com/questions/13198131/how-to-save-a-html5-canvas-as-image-on-a-server
             $.ajax({
@@ -331,53 +311,19 @@ $(document).on('click', '#postToMapBtn', function () {
                 }
             }).done(function (o) {
                 console.log('Image Uploaded: saved');
-                win(o);
-                // If you want the file to be visible in the browser 
-                // - please modify the callback in javascript. All you
-                // need is to return the url to the file, you just saved 
-                // and than put the image in your browser.
+                $.mobile.loading("hide");
+                $(":mobile-pagecontainer").pagecontainer("change", "#mapPage", {transition: "fade"});
             });
-
-//            var options = new FileUploadOptions();
-//            options.fileKey = "file";
-//            options.fileName = fileNameStr;
-//            options.mimeType = "image/jpeg";
-//
-//            var params = {};
-//            options.params = params;
-//
-//            var ft = new FileTransfer();
-//            ft.upload(imageURI, encodeURI("http://emoapp.info/php/uploadImage.php"), win, fail, options);
-        }
-
-        function win(r) {
-
-            $.mobile.loading("hide");
-            console.log("--- Code has Worked? --- ");
-            console.log("Code = " + r.responseCode);
-            console.log("Response = " + r.response);
-            console.log("Sent = " + r.bytesSent);
-            // Do page change on file upload
-            //mapSetView(postLat, postLong);
-            $(":mobile-pagecontainer").pagecontainer("change", "#mapPage", {transition: "slidedown"});
-        }
-
-        function fail(error) {
-
-            $.mobile.loading("hide");
-            alert("An error has occurred: Code = " + error.code);
-            console.log("upload error source " + error.source);
-            console.log("upload error target " + error.target);
         }
 
         // Start the file upload process        
         uploadPhoto(imageNameStr);
-
+        console.log('Upload Info to Database: ');
         $.ajax({url: 'http://emoapp.info/php/postToMap.php',
             data: {
                 action: 'post', userEmail: userEmail,
-                parentEmoji: parentEmoji, emojiSentence: emojiSentence,
-                imageLocation: imageNameStr, musicId: musicId,
+                parentEmoji: parentEmoji,
+                imageLocation: imageNameStr,
                 postPublic: postPublic, postLat: postLat,
                 postLong: postLong, timeDevice: timeDevice
             },
@@ -392,7 +338,6 @@ $(document).on('click', '#postToMapBtn', function () {
             complete: function () {
                 // This callback function will trigger on data sent/received complete
                 console.log('Complete ');
-                //$.mobile.hidePageLoadingMsg(); // This will hide ajax spinner
             },
             success: function (result) {
                 console.log('Database call was : ' + result);
@@ -455,7 +400,7 @@ $(document).on("pagecreate", "#emotionPostPage", function () {
     // Set the image in place for camera
     var canvas = document.getElementById('imageCanvas');
     canvas.width = 960;
-    canvas.height = 1040;
+    canvas.height = 1080;
     canvas.style.width = '320px';
     canvas.style.height = '360px';
     var context = canvas.getContext('2d');
@@ -464,6 +409,7 @@ $(document).on("pagecreate", "#emotionPostPage", function () {
     var canvasBtnObj = new Image();
 
     canvasBtnObj.onload = function () {
+        context.globalAlpha = 1;
         context.drawImage(canvasBtnObj, 80, 0);
     };
     canvasBtnObj.src = 'images/menu/canvasBtn.svg';
@@ -573,31 +519,31 @@ $(document).on('click', '.removeEmoji', function () {
     $(this).remove();
 });
 
-$(document).on('click', '#testArray', function () {
-    var imgEmoji = $(".emojiRender").children('.removeEmoji');
-    var emojiImgArr = jQuery.makeArray(imgEmoji);
-    console.log(emojiImgArr);
-    var padLeft = 20;
-    var canvas = document.getElementById('imageCanvas');
-    var context = canvas.getContext('2d');
-
-    $.each(emojiImgArr, function (index, value)
-    {
-
-        console.log(index);
-        console.log(value.title);
-        var imgEmo = new Image();
-        (function (pad) {
-            imgEmo.onload = function () {
-                context.drawImage(imgEmo, pad, 200, 30, 30);
-            };
-            imgEmo.src = 'images/emojis/' + value.title + '.png';
-        })(padLeft);
-        padLeft = padLeft + 50;
-        console.log(padLeft);
-    });
-
-});
+//$(document).on('click', '#testArray', function () {
+//    var imgEmoji = $(".emojiRender").children('.removeEmoji');
+//    var emojiImgArr = jQuery.makeArray(imgEmoji);
+//    console.log(emojiImgArr);
+//    var padLeft = 20;
+//    var canvas = document.getElementById('imageCanvas');
+//    var context = canvas.getContext('2d');
+//
+//    $.each(emojiImgArr, function (index, value)
+//    {
+//
+//        console.log(index);
+//        console.log(value.title);
+//        var imgEmo = new Image();
+//        (function (pad) {
+//            imgEmo.onload = function () {
+//                context.drawImage(imgEmo, pad, 200, 30, 30);
+//            };
+//            imgEmo.src = 'images/emojis/' + value.title + '.png';
+//        })(padLeft);
+//        padLeft = padLeft + 50;
+//        console.log(padLeft);
+//    });
+//
+//});
 
 // -------------------------------------------------------------------------------------------
 // ------------------------------  When the Profile is showen ---------------------------- 

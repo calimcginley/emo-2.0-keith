@@ -22,9 +22,7 @@
     //$email = ($_POST['userEmail']);
     $email = 'hiace.mcginley@gmail.com';
     $parentEmoji = ($_POST['parentEmoji']);   
-    //$emojiSentence = ($_POST['emojiSentence']);   
     $imageLocation = ($_POST['imageLocation']);   
-    $musicId = ($_POST['musicId']);   
     $postPublic = ($_POST['postPublic']);   
     $postLat = ($_POST['postLat']);   
     $postLong = ($_POST['postLong']);   
@@ -35,7 +33,7 @@
         //$result = mysql_query("INSERT INTO emotionPosts ( userID, emoType, emoji, imageName, songID, public, lat, long, timeLocal ) SELECT userID, '".$parentEmoji ."', '".$emojiSentence."', '".$imageLocation."', '".$musicId."', '".$postPublic."', '".$postLat."', '".$postLong."', '".$timeDevice."' FROM userTable WHERE userEmail = '".$email."'") or die(mysql_error());
         //echo "INSERT INTO emotionPosts ( userID, emoType, emoji, imageName, songID, public, lat, long, timeLocal ) SELECT userID, '3', 'emojiSentence', 'imageLocation', '1234', '1', '52.32', '-6,32', '15:10:12' FROM userTable WHERE userEmail = '".$email."'";
         //if (!mysqli_query($con,"INSERT INTO emotionPosts ( userID, emoType, emoji, imageName, songID, public, lat, `long`, timeLocal ) SELECT userID, '".$parentEmoji ."', '".$emojiSentence."', '".$imageLocation."', '".$musicId."', '".$postPublic."', '".$postLat."', '".$postLong."', '".$timeDevice."' FROM userTable WHERE userEmail = '".$email."'"))
-        if (!mysqli_query($con,"INSERT INTO emotionPosts ( userID, emoType, emoji, imageName, songID, public, postLat, postLong, timeLocal ) SELECT userID, '".$parentEmoji ."', 'emojiSentence', '".$imageLocation."', '".$musicId."', '".$postPublic."', '".$postLat."', '".$postLong."', '".$timeDevice."' FROM userTable WHERE userEmail = '".$email."'"))
+        if (!mysqli_query($con,"INSERT INTO emotionPosts ( userID, emoType, emoji, imageName, public, postLat, postLong, timeLocal ) SELECT userID, '".$parentEmoji ."', 'emojiSentence', '".$imageLocation."', '".$postPublic."', '".$postLat."', '".$postLong."', '".$timeDevice."' FROM userTable WHERE userEmail = '".$email."'"))
         {
             echo("Error description: " . mysqli_error($con));
             mysqli_close($con);

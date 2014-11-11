@@ -17,13 +17,13 @@ list($type, $data) = explode(';', $data);
 list(, $data)      = explode(',', $data);
 $data = base64_decode($data);
 
-if(file_put_contents('../uploads/'.$image_name.'.png', $data))
+if(file_put_contents('../uploads/'.$image_name.'.jpg', $data))
 {
     echo "Uploaded";
 } else 
 {
     echo "File was not uploaded". "\n";
-    echo "image name : ".$image_name. ".png \n";
+    echo "image name : ".$image_name. ".jpg \n";
     echo "data : ".$data. "\n";
 }  
 
