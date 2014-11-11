@@ -131,19 +131,23 @@
                             <label for="checkboxSelectAll">Select All</label>
                             <hr>
                             <form id="filterForm">
-                                <div class="ui-grid-c">
-                                    <a href='#' data-role="button" class="quickSearch ui-block-a" data-name="HOUR" >Last<br>8hrs</a>
-                                    <a href='#' data-role="button" class="quickSearch ui-block-b" data-name="DAY" >Last<br>Day</a>
-                                    <a href='#' data-role="button" class="quickSearch ui-block-c" data-name="WEEK" >Last<br>Week</a>
-                                    <a href='#' data-role="button" class="quickSearch ui-block-d" data-name="MONTH" >Last<br>Month</a>
-                                </div>
-                                <hr>
-                                <h4>Date Range</h4>
-                                <div class="input-daterange ui-grid-a" id="datepicker">
-                                    <div class="ui-block-a">From:<input type="text" class="input-small" name="start" data-mini="true"/></div>
-                                    <div class="ui-block-b">To:<input type="text" class="input-small" name="end" data-mini="true"/></div>
-                                </div>
-                                <input id="filterButton" type="button" value="Search Map" data-icon="search">
+                            <div data-role="collapsible" data-collapsed-icon="carat-d" data-expanded-icon="carat-u"  data-iconpos="right">
+                                <h3>Advanced</h3>
+                                
+                                    <div class="ui-grid-c">
+                                        <a href='#' data-role="button" class="quickSearch ui-block-a" data-name="HOUR" >Last<br>8hrs</a>
+                                        <a href='#' data-role="button" class="quickSearch ui-block-b" data-name="DAY" >Last<br>Day</a>
+                                        <a href='#' data-role="button" class="quickSearch ui-block-c" data-name="WEEK" >Last<br>Week</a>
+                                        <a href='#' data-role="button" class="quickSearch ui-block-d" data-name="MONTH" >Last<br>Month</a>
+                                    </div>
+                                    <hr>
+                                    <h4>Date Range</h4>
+                                    <div class="input-daterange ui-grid-a" id="datepicker">
+                                        <div class="ui-block-a">From:<input id="dateStart" type="text" class="input-small" name="start" data-mini="true"/></div>
+                                        <div class="ui-block-b">To:<input id="dateEnd" type="text" class="input-small" name="end" data-mini="true"/></div>
+                                    </div>
+                            </div>
+                            <input id="filterButton" type="button" value="Search Map" data-icon="search">
                             </form>
                         </div>
 
@@ -290,8 +294,8 @@
                         <div class="menu-top-buttons">
                             <a href="#mapPage" class="mapLink" data-transition="slide"><img src="images/menu/mapBtn.svg" class="left-panel-btn" alt="" /></a>
                             <a href="#" data-transition="slide" class="emoFilterBtn"><img src="images/menu/searchBtn.svg" class="left-panel-btn" alt="" /></a>
-                            <a href="#" data-transition="slide" class="emoPostBtn"><img src="images/menu/postBtn.svg" class="left-panel-btn" alt="" /></a>
-                            <a href="#profilePage" data-transition="slide"><img src="images/menu/profileBtn.svg" class="left-panel-btn" alt="" /></a>
+                            <a href="#" data-transition="slide" class="emoPostBtn"><img src="images/menu/cameraBtn.svg" class="left-panel-btn" alt="" /></a>
+                            <a href="#profilePage" data-transition="slide"><img src="images/menu/profileBtn_2.svg" class="left-panel-btn" alt="" /></a>
                         </div>
                         <a href="#" data-transition="slide" class="infoMenuButton"><img src="images/menu/pinsIcon.svg" alt="" style="padding-left: 2.5em;"/></a>
                         <img src="images/menu/pinsExplained.svg" class="infoMenu"/>
@@ -327,9 +331,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="bar"  data-theme="a"><a data-role='button' href="#" id="toggle">emoji Description</a></div>
+                        <div id="bar"  data-theme="a"><a data-role='button' href="#" id="toggle">Describe</a></div>
                         <div id="lower">
-                            <a data-role='button' href="javascript:void(0)" data-transition="slide" id="postToMapBtn">Post to Map</a>
+                            <a data-role='button' href="javascript:void(0)" data-transition="slide" id="postToMapBtn">Vibe it</a>
                             <img id="imageHolder" src="" alt=""/>
                         </div>
                     </div>

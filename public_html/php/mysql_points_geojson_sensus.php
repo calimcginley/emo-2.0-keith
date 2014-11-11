@@ -21,7 +21,8 @@ $sqlTimeFilter = '';
 # where string 
 $timeType = $_GET["timeType"];
 $interval = $_GET["interval"];
-#$timeFilter = $_GET["time"];
+$startDate = $_GET["startDate"];
+$endDate = $_GET["endDate"];
 if($timeType == 'fastButtons')
 {
     $sqlTimeFilter = 'DATE_SUB(NOW(), INTERVAL ';
@@ -38,6 +39,10 @@ else if ($timeType == 'default')
 {
     // Set to 6 months change to 1 day or 8 hours when live
     $sqlTimeFilter = 'DATE_SUB(NOW(), INTERVAL 6 MONTH ) AND NOW()';
+}
+else if ($timeType == 'dateRange')
+{
+   $sqlTimeFilter = $startDate .' AND ' .$endDate; 
 }
 
 # Build SQL SELECT statement including x and y columns
