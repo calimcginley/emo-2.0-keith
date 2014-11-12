@@ -80,13 +80,12 @@ if (mysql_num_rows($result) > 0)
             //$post['userID'] = $row['userID'];
             $post['emoType'] = $row['emoType'];
             $post['imageName'] = $row['imageName'];
-            $post['songID'] = $row['songID'];
             //$post['public'] = $row['public'];
             $post['lat'] = $row['postLat'];
             $post['long'] = $row['postLong'];
             $post['timeServer'] = $row['timeServer'];
             $post['timeLocal'] = $row['timeLocal'];
-
+            $post['timeNow'] = gmdate('Y-m-d H:i:s');
 
        // push single product into final response array
         array_push($response["posts"], $post);

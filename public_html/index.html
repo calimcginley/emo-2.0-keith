@@ -17,7 +17,7 @@
         <link href="css/emoMain.css" rel="stylesheet" type="text/css"/>
         <link href='css/mapbox.css' rel='stylesheet' type="text/css"/>
         <link href="css/MarkerCluster.Default.css" rel="stylesheet" type="text/css"/>
-        <link href="css/homeycombs.css" rel="stylesheet" type="text/css"/>
+        <!--        <link href="css/homeycombs.css" rel="stylesheet" type="text/css"/>-->
         <link href="css/font-awesome.css" rel="stylesheet" type="text/css"/>
         <link href="css/animate.css" rel="stylesheet" type="text/css"/>
         <link href="css/normalize.css" rel="stylesheet" type="text/css"/>
@@ -31,13 +31,14 @@
         <script src="js/d3.min.js"  type="text/javascript"></script>
         <script src="js/hexbin.js"  type="text/javascript"></script>
         <script src="js/simple_statistics.js"  type="text/javascript"></script>
-        <script src="js/jquery.homeycombs.js"  type="text/javascript"></script>
+        <!--        <script src="js/jquery.homeycombs.js"  type="text/javascript"></script>-->
         <script src="js/jquery.velocity.min.js"  type="text/javascript"></script> 
         <script src="js/floatlabels.min.js"  type="text/javascript"></script>    
         <script src="js/jquery.emoji.js" type="text/javascript"></script>
         <script src="js/jquery.sha256.min.js" type="text/javascript"></script>
         <script src="js/bootstrap-datepicker.js" type="text/javascript"></script>       
         <script src="js/moment.js" type="text/javascript"></script>
+        <script src="js/masonry.min.js" type="text/javascript"></script>
     </head>
     <body>
         <!--    Start of   -->
@@ -86,12 +87,12 @@
                     </nav>
                     <nav class="menu-side">
                         <div class="menu-top-buttons">
-                            <a href="#mapPage" class="mapLink" data-transition="slide"><img src="images/menu/mapBtn.svg" class="left-panel-btn" alt="" /></a>
+                            <a href="#mapPage" class="mapLink" data-transition="slide"><img src="images/menu/mapBtn_2.svg" class="left-panel-btn" alt="" /></a>
                             <a href="#" data-transition="slide" class="emoFilterBtn"><img src="images/menu/searchBtn.svg" class="left-panel-btn" alt="" /></a>
-                            <a href="#" data-transition="slide" class="emoPostBtn"><img src="images/menu/cameraBtn.svg" class="left-panel-btn" alt="" /></a>
+                            <a href="#" data-transition="slide" class="emoPostBtn"><img src="images/menu/postBtn.svg" class="left-panel-btn" alt="" /></a>
                             <a href="#profilePage" data-transition="slide"><img src="images/menu/profileBtn_2.svg" class="left-panel-btn" alt="" /></a>
                         </div>
-                        <a href="#" data-transition="slide" class="infoMenuButton"><img src="images/menu/pinsIcon.svg" alt="" style="padding-left: 2.5em;"/></a>
+                        <a href="#" data-transition="slide" class="infoMenuButton"><img src="images/menu/pinsIcon.svg" alt="" class="infoMenuButtonImg" /></a>
                         <img src="images/menu/pinsExplained.svg" class="infoMenu"/>
                     </nav>
                 </div>
@@ -115,11 +116,11 @@
 
                         <!-- Emoji Filter Bar -->
                         <div id="emojiSearchBar">
-                            <h3>Pick your Vibe</h3> 
+
                             <a href='#' class="emojiFilter" data-name="1"><img src='images/emojiSelect/emoji-1.png'/></a>
                             <a href='#' class="emojiFilter" data-name="2"><img src='images/emojiSelect/emoji-2.png'/></a>
                             <a href='#' class="emojiFilter" data-name="3"><img src='images/emojiSelect/emoji-3.png'/></a>
-                            <a href='#' class="emojiFilter" data-name="4"><img src='images/emojiSelect/emoji-4.png'/></a><br>
+                            <a href='#' class="emojiFilter" data-name="4"><img src='images/emojiSelect/emoji-4.png'/></a><br><br>
                             <a href='#' class="emojiFilter" data-name="5"><img src='images/emojiSelect/emoji-5.png'/></a>
                             <a href='#' class="emojiFilter" data-name="6"><img src='images/emojiSelect/emoji-6.png'/></a>
                             <a href='#' class="emojiFilter" data-name="7"><img src='images/emojiSelect/emoji-7.png'/></a>
@@ -150,7 +151,7 @@
                         <!-- Emo Select Div -->
                         <div id="emojiPostSelectParent">
                             <div id="parentEmojiSelect">
-                                <h2>What's your Vibe?</h2>
+                                <h4>What's your Vibe?</h4>
                                 <a href='#' class="emojiParent" data-name="1"><img src='images/emojiSelect/emoji-1.png'/></a>
                                 <a href='#' class="emojiParent" data-name="2"><img src='images/emojiSelect/emoji-2.png'/></a>
                                 <a href='#' class="emojiParent" data-name="3"><img src='images/emojiSelect/emoji-3.png'/></a>
@@ -178,12 +179,12 @@
                     </nav>
                     <nav class="menu-side">
                         <div class="menu-top-buttons">
-                            <a href="#mapPage" class="mapLink" data-transition="slide"><img src="images/menu/mapBtn.svg" class="left-panel-btn" alt="" /></a>
+                            <a href="#mapPage" class="mapLink" data-transition="slide"><img src="images/menu/mapBtn_2.svg" class="left-panel-btn" alt="" /></a>
                             <a href="#" data-transition="slide" class="emoFilterBtn"><img src="images/menu/searchBtn.svg" class="left-panel-btn" alt="" /></a>
-                            <a href="#" data-transition="slide" class="emoPostBtn"><img src="images/menu/cameraBtn.svg" class="left-panel-btn" alt="" /></a>
+                            <a href="#" data-transition="slide" class="emoPostBtn"><img src="images/menu/postBtn.svg" class="left-panel-btn" alt="" /></a>
                             <a href="#profilePage" data-transition="slide"><img src="images/menu/profileBtn_2.svg" class="left-panel-btn" alt="" /></a>
                         </div>
-                        <a href="#" data-transition="slide" class="infoMenuButton"><img src="images/menu/pinsIcon.svg" alt="" style="padding-left: 2.5em;"/></a>
+                        <a href="#" data-transition="slide" class="infoMenuButton"><img src="images/menu/pinsIcon.svg" alt="" style="padding-left: 1em;"/></a>
                         <img src="images/menu/pinsExplained.svg" class="infoMenu"/>
                     </nav>
                 </div>
@@ -194,10 +195,11 @@
                             <img src="images/profile/settings.svg" class="profileNavImg" style="padding-left: 10em;"/>
                         </a>
                     </div>
-                    <div id="honeyProfileTab">
-                        <div class="honeycombs">
+                    <div id="profilePopup">
+                        <div id="profilePostsWrap">
+                            <div id="profilePosts"></div>
+                            <button id="addProfilePost" data-theme="a">Load More</button>
                         </div>
-                        <button id="addHoneyImg" data-theme="a">Load More</button>
                     </div>
                 </div><!-- /content-wrap -->
             </div><!-- /container -->
@@ -216,12 +218,12 @@
                     <nav class="menu-side">
                         <img src="images/vibesBorder.svg" alt="vibe" style="padding-left: 2em;">
                         <div class="menu-top-buttons">
-                            <a href="#mapPage" class="mapLink" data-transition="slide"><img src="images/menu/mapBtn.svg" class="left-panel-btn" alt="" /></a>
+                            <a href="#mapPage" class="mapLink" data-transition="slide"><img src="images/menu/mapBtn_2.svg" class="left-panel-btn" alt="" /></a>
                             <a href="#" data-transition="slide" class="emoFilterBtn"><img src="images/menu/searchBtn.svg" class="left-panel-btn" alt="" /></a>
-                            <a href="#" data-transition="slide" class="emoPostBtn"><img src="images/menu/cameraBtn.svg" class="left-panel-btn" alt="" /></a>
+                            <a href="#" data-transition="slide" class="emoPostBtn"><img src="images/menu/postBtn.svg" class="left-panel-btn" alt="" /></a>
                             <a href="#profilePage" data-transition="slide"><img src="images/menu/profileBtn_2.svg" class="left-panel-btn" alt="" /></a>
                         </div>
-                        <a href="#" data-transition="slide" class="infoMenuButton"><img src="images/menu/pinsIcon.svg" alt="" style="padding-left: 2.5em;"/></a>
+                        <a href="#" data-transition="slide" class="infoMenuButton"><img src="images/menu/pinsIcon.svg" alt="" style="padding-left: 1em;"/></a>
                         <img src="images/menu/pinsExplained.svg" class="infoMenu"/>
                     </nav>
                 </div>
@@ -234,12 +236,12 @@
                         </div>                       
                         <div id="aboutInfo">
                             <!-- start slipsum code -->
-                            <h1  style="padding-left: 4.5em; color: #79CCC9;">What</h1>
+                            <h1  style="padding-left: 4.5em; color: #79CCC9; font-weight: lighter; letter-spacing: 0.3em;">What</h1>
                             <p class="what" >Vibes is a location-based, emotion-mapping app. Use the search function to quickly and easily view the Vibe of any area you would like to see!</p>
 
-                            <h1 style="padding-left: 4.5em; color: #EA3992;">How</h1>
+                            <h1 style="padding-left: 4.5em; color: #EA3992; font-weight: lighter; letter-spacing: 0.3em;">How</h1>
                             <p class="how" >Instead of text Vibes uses images, emojis and colour to communicate. To add your Vibe to the map simply take a photo, tag it with one of the 8 emojis (your choice determines the colour of your pin) then describe how you're feeling using our custom emoji set!</p>
-                            <h1 style="padding-left: 4.5em; color: #F5841F;">Who</h1>
+                            <h1 style="padding-left: 4.5em; color: #F5841F; font-weight: lighter; letter-spacing: 0.3em;">Who</h1>
                             <p class="who" > A hybrid app designed and developed by Keith McGinley & Sona Harrison as part of a final project for an Msc in Creative Digital Media from Dublin Institute of Technology (DIT).</p>
                             <!-- end slipsum code -->                      </div>
                     </nav>              
@@ -268,7 +270,7 @@
                             <button id="updateBtn" class="buttonStyles" >Update User Info</button>
                         </div>
                         <button id="logoutBtn" class="buttonStyles" >Logout</button>
-                        <img src='images/vibesHeader_2.svg' class="mapLink" alt='' style="padding-left: 7em; padding-top: 3em;" >
+                        <img src='images/vibesHeader_2.svg' class="mapLink" alt='' style="padding-left: 7.5em; padding-top: 8em;" >
                     </div>
 
                 </div><!-- /content-wrap -->
@@ -290,12 +292,12 @@
                     </nav>
                     <nav class="menu-side">
                         <div class="menu-top-buttons">
-                            <a href="#mapPage" class="mapLink" data-transition="slide"><img src="images/menu/mapBtn.svg" class="left-panel-btn" alt="" /></a>
+                            <a href="#mapPage" class="mapLink" data-transition="slide"><img src="images/menu/mapBtn_2.svg" class="left-panel-btn" alt="" /></a>
                             <a href="#" data-transition="slide" class="emoFilterBtn"><img src="images/menu/searchBtn.svg" class="left-panel-btn" alt="" /></a>
-                            <a href="#" data-transition="slide" class="emoPostBtn"><img src="images/menu/cameraBtn.svg" class="left-panel-btn" alt="" /></a>
+                            <a href="#" data-transition="slide" class="emoPostBtn"><img src="images/menu/postBtn.svg" class="left-panel-btn" alt="" /></a>
                             <a href="#profilePage" data-transition="slide"><img src="images/menu/profileBtn_2.svg" class="left-panel-btn" alt="" /></a>
                         </div>
-                        <a href="#" data-transition="slide" class="infoMenuButton"><img src="images/menu/pinsIcon.svg" alt="" style="padding-left: 2.5em;"/></a>
+                        <a href="#" data-transition="slide" class="infoMenuButton"><img src="images/menu/pinsIcon.svg" alt="" style="padding-left: 1em;"/></a>
                         <img src="images/menu/pinsExplained.svg" class="infoMenu"/>
                     </nav>
                 </div>
