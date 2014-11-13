@@ -46,17 +46,17 @@ else if ($timeType == 'dateRange')
 }
 
 # Build SQL SELECT statement including x and y columns
-$sql = 'SELECT postID, emoType, postLat, postLong FROM emotionPosts WHERE emoType REGEXP ' .$emoTypeFilter .' AND timeServer BETWEEN ' .$sqlTimeFilter;
 # $sql = 'SELECT postID, emoType, postLat, postLong FROM emotionPosts WHERE timeServer BETWEEN SUBDATE(CURDATE(), INTERVAL 1 MONTH) AND NOW();';
+    $sql = 'SELECT postID, emoType, postLat, postLong FROM emotionPosts WHERE emoType REGEXP ' .$emoTypeFilter .' AND timeServer BETWEEN ' .$sqlTimeFilter;
 
 /*
 * If bbox variable is set, only return records that are within the bounding box
 * bbox should be a string in the form of 'southwest_lng,southwest_lat,northeast_lng,northeast_lat'
 * Leaflet: map.getBounds().pad(0.05).toBBoxString()
 
-if (isset($_GET['bbox']) || isset($_POST['bbox'])) {
-    $bbox = explode(',', $_GET['bbox']);
-    $sql = $sql . ' WHERE postLat <= ' . $bbox[2] . ' AND postLat >= ' . $bbox[0] . ' AND postLong <= ' . $bbox[3] . ' AND postLong >= ' . $bbox[1];
+if (isset($_GET['bounds']) || isset($_POST['bounds'])) {
+    $bbox = explode(',', $_GET['bounds']);
+    $sql = 'SELECT postID, emoType, postLat, postLong FROM emotionPosts WHERE postLat <= ' . $bbox[2] . ' AND postLat >= ' . $bbox[0] . ' AND postLong <= ' . $bbox[3] . ' AND postLong >= ' . $bbox[1] .'AND WHERE emoType REGEXP ' .$emoTypeFilter .' AND timeServer BETWEEN ' .$sqlTimeFilter;
 }*/
 
 # Try query or error
